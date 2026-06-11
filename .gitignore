@@ -2,6 +2,14 @@
 .wikimem-cache/
 node_modules/
 
+# TypeScript build output (rebuilt fresh by CI `npm run build`)
+dist/
+# Test build output (npm test compiles tests here, then runs node --test on the .js)
+dist-test/
+
+# acceptance-test scaffold scratch dir
+_acceptance/
+
 # WikiMem test vault personal data
 my-wiki/raw/
 tools/agentgrid/app/release/

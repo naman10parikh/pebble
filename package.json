@@ -1,0 +1,43 @@
+{
+  "name": "pebble",
+  "version": "0.1.0",
+  "description": "Energy mobile employee — React Native + Expo + EAS, operated headlessly as an agent",
+  "type": "module",
+  "bin": {
+    "pebble": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "eas",
+    "claude",
+    "agent",
+    "mobile",
+    "energy"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "tsc -p tsconfig.test.json && node --test \"dist-test/**/*.test.js\"",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "dependencies": {
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0"
+  }
+}

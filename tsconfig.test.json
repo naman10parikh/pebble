@@ -1,0 +1,14 @@
+{
+  "//": "Test build: compiles src/ INCLUDING *.test.ts into dist-test/, then `node --test` runs the emitted .js. This keeps the published dist/ test-free while making `npm test` deterministic on any Node (strip-types does NOT remap .js→.ts import specifiers).",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist-test",
+    "rootDir": "./src",
+    "declaration": false,
+    "sourceMap": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist", "dist-test"]
+}
