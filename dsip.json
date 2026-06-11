@@ -32,7 +32,7 @@
   },
   "externalIntelligence": {
     "enabled": true,
-    "source": "vertical ecosystem watch (changelogs, issues, X) per brain/TOOL-MATRIX.md"
+    "source": "vertical ecosystem watch (changelogs, issues, X) per brain/TOOL-MATRIX.md §6"
   },
   "relatedHarnesses": {
     "openEndedness": "github.com/naman10parikh/darwin (DSIP origin)",

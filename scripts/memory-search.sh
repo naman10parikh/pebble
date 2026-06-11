@@ -10,6 +10,7 @@ set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 MEMORY_DIR="$PROJECT_DIR/memory"
+BRAIN_DIR="$PROJECT_DIR/brain"   # pebble: the queryable EXPERTISE brain (the Memory layer `pebble brain` shells)
 VAULT_DIR="$PROJECT_DIR/vault"
 RULES_DIR="$PROJECT_DIR/.claude/rules"
 
@@ -64,9 +65,12 @@ RESULTS_FILE=$(mktemp)
 trap "rm -f $RESULTS_FILE" EXIT
 
 # Source weight map (higher = more authoritative)
+# pebble: the EXPERTISE BRAIN (brain/*.md) is the queryable Memory layer — weighted highest
+# (HARNESS-OVERRIDES §2: the search MUST reach brain/, not grep alone). This is what `pebble brain` shells.
 weight_for_source() {
   local file="$1"
   case "$file" in
+    */brain/*)           echo 6 ;;  # pebble's expertise brain — the queryable Memory layer (highest)
     */.claude/rules/*)   echo 5 ;;  # Rules are highest priority
     */memory/LEARNINGS*) echo 4 ;;  # Learnings are core knowledge
     */memory/topics/*)   echo 4 ;;  # Topic files are curated
@@ -164,6 +168,12 @@ extract_context() {
 
 # Build file list to search
 FILES=()
+
+# pebble's EXPERTISE BRAIN (the queryable Memory layer — HARNESS-OVERRIDES §2).
+# This is the corpus `pebble brain "<q>"` shells; weighted highest in weight_for_source above.
+for f in "$BRAIN_DIR"/*.md; do
+  [ -f "$f" ] && FILES+=("$f")
+done
 
 # LEARNINGS.md
 [ -f "$MEMORY_DIR/LEARNINGS.md" ] && FILES+=("$MEMORY_DIR/LEARNINGS.md")
