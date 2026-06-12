@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pebble · cockpit</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- design.md type contract: Poppins body (Energy default) + Instrument Serif display-only -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="masthead">
+  <div>
+    <div class="wordmark">pebble<span class="dot">·</span></div>
+    <div class="tagline" id="tagline">the small thing you ship to a pocket.</div>
+  </div>
+  <div class="stat-strip">
+    <div class="stat"><div class="v num" id="stat-brain">&mdash;</div><div class="k">brain</div></div>
+    <div class="stat"><div class="v num" id="stat-runs">&mdash;</div><div class="k">runs</div></div>
+    <div class="stat"><div class="v num" id="stat-golden">&mdash;</div><div class="k">golden</div></div>
+  </div>
+</header>
+
+<div class="shell">
+  <nav id="nav-rail" class="rail" aria-label="Views">
+    <button data-view="brain" class="active"><span class="glyph">◆</span> Brain</button>
+    <button data-view="runs"><span class="glyph">▤</span> Run log</button>
+    <button data-view="evals"><span class="glyph">▰</span> Eval scores</button>
+    <button data-view="ask"><span class="glyph">✦</span> Ask the employee</button>
+    <div class="rail-foot">
+      Read-mostly over <code>brain/</code>, <code>logs/runs.jsonl</code>, <code>eval/</code>.
+      Writes nothing the CLI doesn't.<br><br>
+      <kbd>/</kbd> focus search
+    </div>
+  </nav>
+  <main id="app-view" class="stage"></main>
+</div>
+
+<!-- marked: brain markdown render (CDN, no build step — mirrors the sentinel cockpit) -->
+<script src="https://cdn.jsdelivr.net/npm/marked@13.0.3/marked.min.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>
