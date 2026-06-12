@@ -1,7 +1,9 @@
 ---
 name: eas-headless-pipeline
-description: Build, submit, and OTA-update a React Native app through EAS HEADLESSLY — the way an agent (not a human at a TTY) must drive it. Encodes the non-interactive flag reflexes, EXPO_TOKEN auth, the mandatory `--environment` on `eas update`, exact eas-cli pinning, and the manual-first-Play-upload wall. Use for "build/submit/OTA this", any `eas` command, or wiring a CI mobile job.
-trigger: "build this app", "submit to the store", "ship an OTA / JS update", any `eas build`/`eas submit`/`eas update`, a CI mobile job, `pebble build`/`pebble submit`/`pebble update`
+description: >-
+  Build, submit, and OTA-update a React Native app through EAS HEADLESSLY — the way an agent (not a human at a TTY) must drive it. Encodes the non-interactive flag reflexes, EXPO_TOKEN auth, the mandatory `--environment` on `eas update`, exact eas-cli pinning, and the manual-first-Play-upload wall. Use for "build/submit/OTA this", any `eas` command, or wiring a CI mobile job.
+trigger: >-
+  "build this app", "submit to the store", "ship an OTA / JS update", any `eas build`/`eas submit`/`eas update`, a CI mobile job, `pebble build`/`pebble submit`/`pebble update`
 model: opus (the headless flag reflexes are load-bearing — a missing flag is a hung agent or a broken CI pipeline; the version-pin call must not be a cheap-tier guess)
 output: the exact headless EAS commands (with every reflex flag injected) + the auth/secret plan + the eas-cli pin + any submit walls flagged, in the format at the bottom
 ---

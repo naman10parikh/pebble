@@ -1,7 +1,9 @@
 ---
 name: expo-new-arch-scaffold
-description: Scaffold a correct, modern, New-Architecture-only Expo app — pin the SDK explicitly, install native deps the right way, gate with expo-doctor, enable typed routes, wire for the Energy pnpm monorepo. Use when someone says "scaffold/start a React Native app", "set up a new Expo project", or runs `pebble init`. Encodes pebble's OPINIONS S1-S5 + the New-Arch-only reality.
-trigger: "scaffold a React Native app", "start a new Expo project", "set up a mobile app", "create-expo-app", before/inside `pebble init`
+description: >-
+  Scaffold a correct, modern, New-Architecture-only Expo app — pin the SDK explicitly, install native deps the right way, gate with expo-doctor, enable typed routes, wire for the Energy pnpm monorepo. Use when someone says "scaffold/start a React Native app", "set up a new Expo project", or runs `pebble init`. Encodes pebble's OPINIONS S1-S5 + the New-Arch-only reality.
+trigger: >-
+  "scaffold a React Native app", "start a new Expo project", "set up a mobile app", "create-expo-app", before/inside `pebble init`
 model: opus (the scaffold encodes pebble's whole taste — a wrong arch/SDK pin is a multi-week sunk cost; the version-pin step in particular must NOT be a cheap-tier guess)
 output: a scaffold plan + the exact commands run (with the EXPLICITLY pinned SDK) + the expo-doctor gate result + the monorepo notes, in the format at the bottom
 ---

@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "name": "pebble",
+  "display_name": "pebble — Energy mobile employee",
+  "description": "The Energy fleet's mobile employee — React Native + Expo + EAS, operated headlessly as an agent. Takes a product idea to a shipped, store-safe, OTA-maintainable iOS + Android app: shape decisions (PWA vs native), New-Architecture-correct Expo scaffolds, headless EAS build/submit/OTA, and App-Store review pre-flight. Bundles the pebble CLI, its MCP server, 5 mobile skills, the mobile hooks, and 2 mobile sub-agents. Powered by Energy.",
+  "version": "0.1.0",
+  "author": "Energy (NRG)",
+  "license": "MIT",
+  "repository": "https://github.com/naman10parikh/pebble",
+  "homepage": "https://github.com/naman10parikh/pebble/blob/main/AGENTS.md",
+  "keywords": [
+    "react-native",
+    "expo",
+    "eas",
+    "claude-code",
+    "agent",
+    "mobile",
+    "harness",
+    "energy"
+  ],
+  "commands": "./.claude/commands",
+  "agents": "./.claude/agents",
+  "skills": "./skills",
+  "mcpServers": "./.mcp.json",
+  "mcp_servers": [
+    {
+      "name": "pebble",
+      "description": "pebble's mobile-toolchain MCP server — exposes the shape decision, scaffold, doctor, EAS build/submit/OTA, screenshot, store-review, brain-query, and version-check tools over the same core as the CLI.",
+      "transport": "stdio",
+      "command": "node",
+      "args": ["dist/mcp-server.js"],
+      "env": {
+        "EXPO_TOKEN": "${EXPO_TOKEN}",
+        "ANTHROPIC_API_KEY": "${ANTHROPIC_API_KEY}",
+        "E2B_API_KEY": "${E2B_API_KEY}"
+      }
+    }
+  ],
+  "capabilities": {
+    "cli": {
+      "bin": "pebble",
+      "entry": "./dist/cli.js",
+      "description": "The pebble binary — wraps the headless EAS/Expo/simctl toolchain with the non-interactive flag reflexes baked in. Commands: init, doctor, decide, build, submit, update, screenshot, review-check, brain, runs, version-check."
+    },
+    "skills": [
+      { "name": "mobile-shape-decision", "path": "./skills/mobile-shape-decision/SKILL.md", "description": "PWA vs native — the '3+ → native' rule + iOS PWA walls (OPINIONS S15)." },
+      { "name": "expo-new-arch-scaffold", "path": "./skills/expo-new-arch-scaffold/SKILL.md", "description": "New-Arch-only Expo scaffold, explicit SDK pin, expo-doctor gate (OPINIONS S1-S5)." },
+      { "name": "eas-headless-pipeline", "path": "./skills/eas-headless-pipeline/SKILL.md", "description": "Headless EAS build/submit/OTA — the flag reflexes + eas-cli pin (TOOL-MATRIX §3)." },
+      { "name": "ota-safety", "path": "./skills/ota-safety/SKILL.md", "description": "Is-this-OTA-safe — the wall, fingerprint RV policy, the #45772 dispute (OPINIONS S6-S8)." },
+      { "name": "store-review-preflight", "path": "./skills/store-review-preflight/SKILL.md", "description": "App-Store rejection pre-flight — Guideline 2.5.2/4.3/5.1.2(i) (OPINIONS S16)." }
+    ],
+    "agents": [
+      { "name": "build-doctor", "path": "./.claude/agents/build-doctor.md", "description": "Triages an EAS failure via the 60-second triage + the 5 breakage categories (the highest-reuse fleet persona)." },
+      { "name": "store-reviewer", "path": "./.claude/agents/store-reviewer.md", "description": "Audits a config against App-Store Guideline 2.5.2/4.3/5.1.2(i)." }
+    ],
+    "hooks": {
+      "settings": "./.claude/settings.json",
+      "description": "Mobile lifecycle gates — a PreToolUse gate blocking an `eas update` missing `--environment` or any `eas`/`expo` call missing `--non-interactive`, and a PostToolUse logger appending EAS build/submit invocations to logs/runs.jsonl."
+    }
+  },
+  "install_instructions": "1. Build the package: npm ci && npm run build\n2. Add this plugin to Claude Code: Settings → Plugins → Add local plugin → select this directory (or `claude plugin install pebble`).\n3. The pebble CLI, the 5 skills, the 2 sub-agents, the mobile hooks, and the `pebble` MCP server are now available in any Claude Code session. Provide EXPO_TOKEN (free, from expo.dev) for the full EAS path; without it, pebble still does shape decisions, scaffolds, doctor, and brain queries."
+}

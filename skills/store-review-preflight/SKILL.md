@@ -1,7 +1,9 @@
 ---
 name: store-review-preflight
-description: Pre-flight an app (especially an AI/agent app) against App Store rejection BEFORE you submit — the 2.5.2 self-modifying-code wall, the 4.3 thin-wrapper/differentiation rule, the 5.1.2(i) consent modal, conservative age rating, and the 1.2 UGC-removal duty. Use for "will Apple reject this?", before any `eas submit`, or any AI-app store review.
-trigger: "will Apple reject this?", "is this store-safe?", "App Store review", "AI app rejection", before any `eas submit` / `pebble submit`, `pebble review-check`
+description: >-
+  Pre-flight an app (especially an AI/agent app) against App Store rejection BEFORE you submit — the 2.5.2 self-modifying-code wall, the 4.3 thin-wrapper/differentiation rule, the 5.1.2(i) consent modal, conservative age rating, and the 1.2 UGC-removal duty. Use for "will Apple reject this?", before any `eas submit`, or any AI-app store review.
+trigger: >-
+  "will Apple reject this?", "is this store-safe?", "App Store review", "AI app rejection", before any `eas submit` / `pebble submit`, `pebble review-check`
 model: opus (a rejection is a multi-day appeal cycle and the rules are behavioral not mechanical — the judgment of "is this differentiated / does this execute features" must not be a cheap-tier guess)
 output: a review-readiness verdict (`clear` | `blocking risks`) + each risk mapped to its guideline + the fix, in the format at the bottom
 ---

@@ -1,7 +1,9 @@
 ---
 name: ota-safety
-description: Decide whether a change is SAFE to ship as an OTA update (and how to ship it without crashing users) — the JS/asset-only wall, the `fingerprint` runtimeVersion policy and its DX asterisks, gradual rollout, and the SDK 54/55 "treat iOS OTA as not-yet-trustworthy" dispute. Use for "is this OTA safe?", "can I ship this as a JS update?", or OTA planning.
-trigger: "is this OTA safe?", "can I ship this as a JS/OTA update?", "push a JS update", "ship without a rebuild", OTA / eas-update planning, before `pebble update`
+description: >-
+  Decide whether a change is SAFE to ship as an OTA update (and how to ship it without crashing users) — the JS/asset-only wall, the `fingerprint` runtimeVersion policy and its DX asterisks, gradual rollout, and the SDK 54/55 "treat iOS OTA as not-yet-trustworthy" dispute. Use for "is this OTA safe?", "can I ship this as a JS update?", or OTA planning.
+trigger: >-
+  "is this OTA safe?", "can I ship this as a JS/OTA update?", "push a JS update", "ship without a rebuild", OTA / eas-update planning, before `pebble update`
 model: opus (the OTA wall is a correctness + store-compliance boundary — a wrong call crashes 100% of users or violates Guideline 2.5.2; never route this judgment to a cheap tier)
 output: an OTA verdict (`ota-safe` | `needs-rebuild`) + the boundary reasoning + the rollout policy + the #45772 caveat, in the format at the bottom
 ---

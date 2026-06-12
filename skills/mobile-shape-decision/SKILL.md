@@ -1,7 +1,9 @@
 ---
 name: mobile-shape-decision
-description: Decide PWA vs native (and the native shape) for a product — especially an AI/agent app. Use when someone asks "PWA or native?", "should this be an app?", "do we need to ship to the store?", or any agent-app shape call. Encodes pebble's OPINIONS S15 "3+ → native" rule and the iOS PWA capability walls.
-trigger: "PWA or native?", "should this be a native app?", "should this be an app at all?", "is a PWA enough?", agent-app / mobile-shape decisions, before `pebble init`
+description: >-
+  Decide PWA vs native (and the native shape) for a product — especially an AI/agent app. Use when someone asks "PWA or native?", "should this be an app?", "do we need to ship to the store?", or any agent-app shape call. Encodes pebble's OPINIONS S15 "3+ → native" rule and the iOS PWA capability walls.
+trigger: >-
+  "PWA or native?", "should this be a native app?", "should this be an app at all?", "is a PWA enough?", agent-app / mobile-shape decisions, before `pebble init`
 model: opus (judgment call — the wrong shape is a multi-week sunk cost; never route this to a cheap tier)
 output: a SHAPE verdict (`native` | `pwa`) + the matched signals + the specific walls that decided it + the cost note, in the format at the bottom
 ---

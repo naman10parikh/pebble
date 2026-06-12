@@ -1,0 +1,41 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "pebble",
+  "version": "0.1.0",
+  "description": "The Energy fleet's mobile employee — React Native + Expo + EAS, operated headlessly as an agent. Shape decisions (PWA vs native), New-Architecture-correct Expo scaffolds, headless EAS build/submit/OTA, and App-Store review pre-flight. Bundles the pebble CLI, its MCP server, 5 mobile skills, the mobile hooks, and 2 mobile sub-agents. Powered by Energy.",
+  "author": {
+    "name": "Energy (NRG)",
+    "email": "[removed]"
+  },
+  "homepage": "https://github.com/naman10parikh/pebble/blob/main/AGENTS.md",
+  "repository": "https://github.com/naman10parikh/pebble",
+  "license": "MIT",
+  "keywords": [
+    "react-native",
+    "expo",
+    "eas",
+    "claude-code",
+    "agent",
+    "mobile",
+    "harness",
+    "energy"
+  ],
+  "skills": [
+    "./skills/mobile-shape-decision",
+    "./skills/expo-new-arch-scaffold",
+    "./skills/eas-headless-pipeline",
+    "./skills/ota-safety",
+    "./skills/store-review-preflight"
+  ],
+  "agents": [
+    "./.claude/agents/build-doctor.md",
+    "./.claude/agents/store-reviewer.md"
+  ],
+  "commands": [
+    "./.claude/commands"
+  ],
+  "mcpServers": "./.mcp.json",
+  "hooks": [
+    "./.claude/settings.json"
+  ]
+}
