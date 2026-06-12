@@ -1,3 +1,5 @@
 {"ts":"2026-06-12T01:45:27Z","cmd":"eas build --platform ios","durationMs":4210,"status":"ok"}
 {"ts":"2026-06-12T01:45:27Z","cmd":"eas submit --platform android","durationMs":0,"status":"error"}
 {"ts":"2026-06-12T01:50:22Z","cmd":"eas build --platform android","durationMs":999,"status":"ok"}
+{"ts":"2026-06-12T03:46:21.826Z","cmd":"doctor","durationMs":18213,"status":"ok"}
+{"ts":"2026-06-12T03:50:46Z","cmd":"eas build --platform ios","durationMs":0,"status":"ok"}
