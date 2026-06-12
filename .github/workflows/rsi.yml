@@ -1,8 +1,13 @@
 name: pebble RSI
-# CP123: dispatch-only until the RSI engine (workflows/rsi.workflow.js + eval gate) is built in Wave B/E.
-# The Claude half additionally needs CLAUDE_CODE_OAUTH_TOKEN (chairman checklist, D8). Guarded = always green.
+# CP123 D2: the nightly DETERMINISTIC ($0/tokenless) RSI half — ENABLED cron (not workflow_dispatch-only).
+# Runs workflows/rsi.workflow.js: re-verify-tool-matrix (Rule 0) → run-eval-pyramid (no-regression gate) →
+# refresh-brain (writes a dated brain/research/proposed-*.md proposal; never auto-merges).
+# The Claude half (L3 judge / synthesis) lights up only when CLAUDE_CODE_OAUTH_TOKEN is set (D8 — chairman checklist).
 on:
-  workflow_dispatch:
+  schedule:
+    # 09:17 UTC daily (~02:17 PT) — off the top of the hour to avoid the GH-Actions cron stampede.
+    - cron: "17 9 * * *"
+  workflow_dispatch: {}
 
 permissions:
   contents: read
@@ -12,9 +17,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Engine guard
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run the deterministic RSI half
+        env:
+          # Token-gated Claude half (D8). Absent on a fresh repo → the runner stays $0 and the deterministic half still runs.
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: node workflows/rsi.workflow.js
+      - name: Surface the proposal
+        if: always()
         run: |
-          if [ ! -f workflows/rsi.workflow.js ]; then
-            echo "RSI engine not built yet (CP123 cluster E) — exiting green."; exit 0
-          fi
-          echo "engine present — deterministic half would run here (wired in cluster E)"
+          echo "Latest RSI proposal:"
+          ls -1 brain/research/proposed-*.md 2>/dev/null | tail -1 || echo "(no proposal written)"

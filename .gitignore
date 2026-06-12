@@ -33,3 +33,9 @@ vault/Untitled*.base
 
 .env
 .env.*
+# …but the placeholder template IS committed (X1 — no real values in it).
+!.env.example
+
+# Nightly RSI proposals are regenerating dated outputs (like dist/) — the runner writes them on each
+# run; the brain/research/ dir itself is tracked (.gitkeep) so a fresh clone has the mkdir target.
+brain/research/proposed-*.md
