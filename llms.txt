@@ -1,0 +1,49 @@
+# pebble
+
+> The Energy fleet's **mobile employee** — React Native · Expo · EAS, operated **headlessly as an agent**, not a
+> human at a TTY. Takes a product idea to a shipped, store-safe, OTA-maintainable iOS + Android app. Tagline:
+> *"the small thing you ship to a pocket."* — powered by Energy. A tool-employee consumed by coding agents and a
+> local cockpit (no reachability face); its surfaces are the `pebble` CLI, an MCP server, and the cockpit.
+> **Rule 0: training memory is one era behind (SDK 53/RN 0.80) — `pebble version-check` (`npm view`) before
+> quoting any version.** Query the expertise brain with `pebble brain "<q>"` before guessing.
+
+## Start here
+
+- [AGENTS.md](AGENTS.md): how a coding agent calls pebble — the full CLI + MCP tool surface, the NOT-list, Rule 0.
+- [identity/SOUL.md](identity/SOUL.md): the persona — what pebble IS / DOES / REFUSES, and how it introduces itself.
+- [CLAUDE.md](CLAUDE.md): pebble's real operating rules — the era-delta, the 5 breakage categories, the OTA wall, the headless flag reflexes, the boundary.
+
+## Expertise brain (the queryable knowledge, dated 2026-06-11 — `pebble brain "<q>"`)
+
+- [brain/EXPERTISE-MAP.md](brain/EXPERTISE-MAP.md): the 10 jobs-to-be-done + the one-line SDK-53→56 era delta.
+- [brain/OPINIONS.md](brain/OPINIONS.md): the 18 taste stances (always/never, with the why and the asterisk).
+- [brain/KNOWN-PITFALLS.md](brain/KNOWN-PITFALLS.md): version-specific landmines + the 60-second pre-debug triage.
+- [brain/BATTLE-TESTED-SCENARIOS.md](brain/BATTLE-TESTED-SCENARIOS.md): 15 production postmortems (symptom → root cause → fix → the obvious-but-wrong path).
+- [brain/TOOL-MATRIX.md](brain/TOOL-MATRIX.md): default-vs-alts tool matrix + the §6 ecosystem watch.
+- [brain/GAPS-AND-DISPUTES.md](brain/GAPS-AND-DISPUTES.md): the open disputes (the to-shrink surface the RSI loop closes).
+
+## Skills (executable procedures — `skills/<name>/SKILL.md`)
+
+- [skills/mobile-shape-decision](skills/mobile-shape-decision/SKILL.md): PWA vs native — the "3+ → native" rule + iOS PWA walls (OPINIONS S15).
+- [skills/expo-new-arch-scaffold](skills/expo-new-arch-scaffold/SKILL.md): New-Arch-only scaffold, explicit SDK pin, `expo-doctor` gate (OPINIONS S1–S5).
+- [skills/eas-headless-pipeline](skills/eas-headless-pipeline/SKILL.md): headless EAS build/submit/OTA — the flag reflexes + eas-cli pin (TOOL-MATRIX §3).
+- [skills/ota-safety](skills/ota-safety/SKILL.md): is-this-OTA-safe — the wall, `fingerprint` RV policy, the #45772 dispute (OPINIONS S6–S8).
+- [skills/store-review-preflight](skills/store-review-preflight/SKILL.md): App-Store rejection pre-flight — 2.5.2/4.3/5.1.2(i) (OPINIONS S16).
+
+## MCP server (JSON-RPC over stdio — same core as the CLI)
+
+Registered in [.mcp.json](.mcp.json) as the `pebble` server (`node dist/mcp-server.js`). `tools/list` returns:
+`pebble_decide_shape` · `pebble_init` · `pebble_doctor` · `pebble_eas_build` · `pebble_eas_submit` ·
+`pebble_eas_update` · `pebble_screenshot` · `pebble_review_check` · `pebble_brain_query` · `pebble_version_check`.
+
+## Sub-agents (callable via `Agent` — `.claude/agents/`)
+
+- [.claude/agents/build-doctor.md](.claude/agents/build-doctor.md): triages an EAS failure via the 60-second triage + the 5 breakage categories (the highest-reuse fleet persona).
+- [.claude/agents/store-reviewer.md](.claude/agents/store-reviewer.md): audits a config against App-Store Guideline 2.5.2/4.3/5.1.2(i).
+
+## The acceptance test (the operational "done" bar)
+
+[.github/workflows/acceptance.yml](.github/workflows/acceptance.yml) (red-blocking, `macos-latest`):
+`pebble version-check` → `pebble init ./_acceptance --sdk 56 --template default@sdk-56` → `pebble doctor` →
+`eas config --platform ios --non-interactive` → `pebble screenshot --platform ios ./_acceptance/boot.png` →
+`test -s boot.png`. Degrades to structural-only without `EXPO_TOKEN`. Full contract: [PLAN.md](PLAN.md) §5.
