@@ -1,0 +1,79 @@
+name: acceptance
+# CP123 — THE acceptance test (PLAN §5 / HARNESS-OVERRIDES "operational definition of done").
+# Red-blocking. runs-on macos-latest (the iOS-simulator step needs Xcode — E2B is Linux, can't host it).
+#
+# Degrade contract (D10): with EXPO_TOKEN provisioned → FULL mode (eas config + simulator screenshot run).
+# Without it → STRUCTURAL-ONLY: build · version-check · scaffold · doctor · eval L1 (the offline shape gate)
+# STILL red-block; the EXPO_TOKEN-gated steps skip via `if:` + are `continue-on-error`. The shape gate is
+# `eval/run.mjs --l1` (E1) — NOT `eas config` (which needs auth/network) — so the cold-reproducible promise
+# never depends on a secret. The degrade is recorded in CHAIRMAN-CHECKLIST §X-EXPO (X1).
+#
+# Lockfile precondition: `npm ci` requires the committed package-lock.json (B2 + the E4 e2b install keep it
+# in sync). If a clone ever lacks it, swap step 3 to `npm install`.
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  acceptance:
+    runs-on: macos-latest
+    # Hoist the secret to a job-level env so the EXPO_TOKEN-gated steps can guard on `env.EXPO_TOKEN`
+    # (the `secrets` context is NOT allowed in a step-level `if:` — only env/github/etc. are — per actionlint).
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # 3 — always red-blocks: proves the repo installs + builds clean on a fresh checkout.
+      - name: Install + build
+        run: npm ci && npm run build
+
+      # 4 — Rule 0 (always red-blocks; rc 0 online, graceful offline message).
+      - name: version-check (Rule 0)
+        run: node dist/cli.js version-check
+
+      # 5 — scaffold on a fresh isolated dir, SDK pinned explicitly (never the @latest transition default).
+      - name: Scaffold (pinned SDK)
+        run: node dist/cli.js init ./_acceptance --sdk 56 --template default@sdk-56
+
+      # 6 — the cheapest health gate (expo-doctor + Rule 0 + 60s triage).
+      - name: Doctor (health gate)
+        run: cd _acceptance && node ../dist/cli.js doctor
+
+      # 7 — THE offline shape gate (always red-blocks; $0, no token/network). E1's L1 asserts the eas.json
+      #     4-profile shape + SDK pin + --non-interactive injected + --environment enforced + no newArchEnabled:false.
+      #     This — not `eas config` — is the cold-reproducible structural bar the degrade promise rests on.
+      - name: Eval L1 (structural shape gate)
+        run: node eval/run.mjs --l1
+
+      # 8 — validate the EAS build config offline (`eas config`, NOT a nonexistent --dry-run). EXPO_TOKEN-gated
+      #     (guard on env.EXPO_TOKEN — the job env carries secrets.EXPO_TOKEN) + continue-on-error: its failure
+      #     must not break the structural-only promise (step 7 already proved shape).
+      - name: eas config (full mode)
+        if: ${{ env.EXPO_TOKEN != '' }}
+        continue-on-error: true
+        run: npx eas-cli@20.1.0 config --platform ios --non-interactive
+
+      # 9 — verify AS A USER: boot the iOS simulator + screenshot (the QA primitive). macOS-runner + token only.
+      - name: Simulator screenshot (full mode)
+        if: ${{ env.EXPO_TOKEN != '' }}
+        continue-on-error: true
+        run: |
+          node dist/cli.js screenshot --platform ios ./_acceptance/boot.png
+          test -s ./_acceptance/boot.png
+
+      # Record which mode ran (the X1 degrade note surfaces here).
+      - name: Mode summary
+        if: always()
+        run: |
+          if [ -n "$EXPO_TOKEN" ]; then
+            echo "acceptance ran in FULL mode (EXPO_TOKEN provisioned)."
+          else
+            echo "acceptance ran in STRUCTURAL-ONLY mode (EXPO_TOKEN unset — see CHAIRMAN-CHECKLIST §X-EXPO)."
+            echo "Red-blocking steps that PASSED: install+build · version-check · scaffold · doctor · eval L1 shape gate."
+          fi
