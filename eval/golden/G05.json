@@ -1,0 +1,17 @@
+{
+  "id": "G05",
+  "scenario": "S5",
+  "jtbd": 5,
+  "hamel_level": "L2",
+  "ci_block": true,
+  "title": "eas update works locally, breaks in CI",
+  "symptom": "eas update succeeds on a dev's laptop; the same command in the CI/agent pipeline fails (or in older scripts, hangs).",
+  "expected_root_cause": "Since Expo SDK 55, eas update REQUIRES the --environment flag — a script written pre-55 omits it and fails (the #1 EAS-Update CI breakage of 2026); separately any eas command without --non-interactive will hang on a TTY prompt in a headless runner",
+  "root_cause_keywords": ["--environment", "sdk 55", "non-interactive"],
+  "expected_fix": "eas update --channel <ch> --message '...' --environment <env> --non-interactive — add --environment to every update call and --non-interactive to every eas command in CI",
+  "fix_keywords": ["--environment", "--non-interactive"],
+  "obvious_but_wrong": "blame CI auth / network / the channel name",
+  "avoid_keywords": ["blame ci auth", "blame the channel"],
+  "pebble_answer": "Root cause: since Expo SDK 55, eas update REQUIRES the --environment flag. A script written pre-55 omits --environment and fails — this is the #1 EAS-Update CI breakage of 2026, and it is invisible locally because dev shells were already configured. Separately, any eas command without --non-interactive will hang forever on a TTY prompt in a headless runner. Fix: run eas update --channel <ch> --message '...' --environment <env> --non-interactive. Add --environment to every update call and --non-interactive to every eas command in CI. Do NOT blame CI auth, the network, or the channel name — those are red herrings; the failure is the missing --environment flag (SDK 55+).",
+  "source": "expo.dev/changelog/sdk-55"
+}

@@ -1,0 +1,17 @@
+{
+  "id": "G06",
+  "scenario": "S6",
+  "jtbd": 4,
+  "hamel_level": "L2",
+  "ci_block": true,
+  "title": "Works on my Mac, fails on EAS: Unable to resolve module ./src/Routes",
+  "symptom": "Metro encountered an error: Unable to resolve module ./src/Routes / Task :app:bundleReleaseJsAndAssets FAILED on the EAS builder; builds fine locally on macOS.",
+  "expected_root_cause": "Filename case differs in Git vs filesystem (routes.js committed but Routes.js on disk); macOS is case-insensitive so it works locally, the EAS Linux builder is case-sensitive so it fails — the single most common 'works on my Mac, fails on EAS' trap",
+  "root_cause_keywords": ["case", "case-sensitiv", "linux"],
+  "expected_fix": "Run npx expo export locally — it reproduces the resolution and catches the case mismatch before a cloud build; fix the casing in Git with git mv to correct the tracked name",
+  "fix_keywords": ["git mv", "expo export"],
+  "obvious_but_wrong": "assume a missing dependency / reinstall node_modules",
+  "avoid_keywords": ["missing dependency", "reinstall node_modules"],
+  "pebble_answer": "Root cause: filename case differs between Git and the filesystem — e.g. routes.js is committed but the import references Routes.js on disk. macOS is case-insensitive so the module resolves locally; the EAS Linux builder is case-sensitive so it fails. This is the single most common 'works on my Mac, fails on EAS' trap. Fix: run npx expo export locally first — it reproduces Metro's resolution and catches the case mismatch for free before you spend a cloud build. Then fix the casing in Git with git mv (correct the tracked name) so the committed filename matches the import. Do NOT assume a missing dependency or reinstall node_modules — the dependency is present; only its filename casing is wrong.",
+  "source": "Expo docs, 'Troubleshoot build errors and crashes'"
+}

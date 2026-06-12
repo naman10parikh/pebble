@@ -30,7 +30,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test": "tsc -p tsconfig.test.json && node --test \"dist-test/**/*.test.js\"",
+    "test": "tsc -p tsconfig.test.json && node --test \"dist-test/**/*.test.js\" \"eval/**/*.test.mjs\"",
     "prepublishOnly": "npm run build && npm test"
   },
   "dependencies": {

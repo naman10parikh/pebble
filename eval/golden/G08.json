@@ -1,0 +1,16 @@
+{
+  "id": "G08",
+  "scenario": "S9",
+  "jtbd": 8,
+  "hamel_level": "L3",
+  "ci_block": false,
+  "title": "New-Arch migration: blank white screen, refs null, no error",
+  "symptom": "After enabling the New Architecture, the app builds and launches but renders a blank white screen with zero diagnostics — no crash, no stack trace. Sometimes paired with refs always null, ref.current.measure() no longer working, or ActionSheetIOS broken.",
+  "expected_root_cause": "Fabric's view flattening — Fabric removes unnecessary View wrappers from the native hierarchy when they don't affect layout, so refs pointing at those wrappers become null; plus React-18-concurrent race conditions exposed by Fabric",
+  "root_cause_keywords": ["fabric", "flatten", "ref"],
+  "expected_fix": "Put collapsable={false} on views you must keep in the native tree (or restructure to ref a view that survives flattening); add useEffect cleanup + AbortController; expect silent failures not stack traces",
+  "fix_keywords": ["collapsable", "false"],
+  "obvious_but_wrong": "grep for a JS error / assume a bundling failure (there's nothing to grep — that's the trap)",
+  "avoid_keywords": ["grep for a js error", "bundling failure"],
+  "source": "Janani Umapathy, 'RN Migration: Every Issue I Faced'"
+}

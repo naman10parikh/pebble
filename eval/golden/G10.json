@@ -1,0 +1,16 @@
+{
+  "id": "G10",
+  "scenario": "S11",
+  "jtbd": 8,
+  "hamel_level": "L3",
+  "ci_block": false,
+  "title": "RN 0.85 upgrade breaks the CI test job",
+  "symptom": "Tests that passed on the prior RN suddenly fail to run in CI after the RN 0.85 (2026-04-07) upgrade; or a build fails referencing StyleSheet.absoluteFillObject; or npm install fails on the CI image.",
+  "expected_root_cause": "RN 0.85 extracted the Jest preset into @react-native/jest-preset (a silent CI breakage — the preset just isn't there anymore); StyleSheet.absoluteFillObject was removed (use absoluteFill); RN 0.84 bumped min Node to 22 (older CI images fail install; Node 21/23 unsupported on 0.85)",
+  "root_cause_keywords": ["jest-preset", "absolutefill", "node"],
+  "expected_fix": "Install and configure @react-native/jest-preset separately and update the Jest config; migrate absoluteFillObject to absoluteFill; bump the CI Node image to >=22 and off 21/23",
+  "fix_keywords": ["@react-native/jest-preset", "absolutefill", "22"],
+  "obvious_but_wrong": "assume your test code regressed",
+  "avoid_keywords": ["test code regressed", "your test code regressed"],
+  "source": "bacancytechnology 'React Native 0.85' (2026-04-07)"
+}

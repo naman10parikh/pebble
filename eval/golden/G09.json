@@ -1,0 +1,17 @@
+{
+  "id": "G09",
+  "scenario": "S10",
+  "jtbd": 8,
+  "hamel_level": "L2",
+  "ci_block": true,
+  "title": "Reanimated 4 compiles but springs feel wrong / 'duplicate worklet instances'",
+  "symptom": "Two flavors. (a) Build/runtime 'duplicate worklet instances'. (b) Compiles fine but springs feel different than before (too fast/slow).",
+  "expected_root_cause": "Reanimated 4.x is New-Arch-only and split worklets into the separate react-native-worklets package; (a) is a Reanimated/worklets version mismatch; (b) is the withSpring semantics change — duration is now perceptual, multiply old durations by 1.5",
+  "root_cause_keywords": ["worklet", "withspring", "perceptual"],
+  "expected_fix": "Install react-native-worklets matching your Reanimated 4.x and rebuild native; switch the babel plugin react-native-reanimated/plugin to react-native-worklets/plugin; multiply old withSpring durations by 1.5 and re-QA feel; sequence Fabric then Reanimated 4 then RN 0.85",
+  "fix_keywords": ["react-native-worklets", "1.5", "plugin"],
+  "obvious_but_wrong": "tweak animation params blindly until it looks right without knowing the semantics changed",
+  "avoid_keywords": ["tweak params blindly", "tweak the params blindly"],
+  "pebble_answer": "Root cause: Reanimated 4.x is New-Arch-only and split worklets into the separate react-native-worklets package. Flavor (a) 'duplicate worklet instances' is a Reanimated/worklets version mismatch. Flavor (b) — it compiles but springs feel wrong — is the withSpring semantics change: restDisplacementThreshold/restSpeedThreshold collapsed to one energyThreshold and duration is now perceptual, so you multiply old durations by 1.5 for equivalent feel. Fix: install react-native-worklets at the version matching your Reanimated 4.x and rebuild native; switch the babel plugin from react-native-reanimated/plugin to react-native-worklets/plugin; migrate renamed APIs (runOnJS to scheduleOnRN, runOnUI to scheduleOnUI); multiply old withSpring durations by 1.5 and re-QA the feel (a design-QA regression a build error won't catch). Sequence the upgrade Fabric then Reanimated 4 then RN 0.85. Do NOT tweak animation params blindly — the semantics changed, so blind tweaking hides the real fix.",
+  "source": "Software Mansion, 'Migrating from Reanimated 3.x to 4.x'"
+}

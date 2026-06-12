@@ -1,0 +1,16 @@
+{
+  "id": "G02",
+  "scenario": "S2",
+  "jtbd": 5,
+  "hamel_level": "L3",
+  "ci_block": false,
+  "title": "iOS OTA crashes 100% on activation (SDK 54/55)",
+  "symptom": "A JS-only OTA consistently crashes on iOS at bundle activation on first launch after download. EXC_CRASH (SIGABRT), Triggered by Thread 15 (Dispatch queue: expo.controller.errorRecoveryQueue). Reverts to embedded bundle.",
+  "expected_root_cause": "expo-updates New-Arch error-recovery bug #45772 — the error-recovery queue itself crashes; occurs regardless of fingerprint OR appVersion policy and persists with anti-bricking enabled or disabled",
+  "root_cause_keywords": ["#45772", "error-recovery"],
+  "expected_fix": "On SDK 54/55 + New Arch treat iOS OTA as not-yet-trustworthy; ship JS changes as full eas build releases; if you must OTA, gate behind gradual rollout + crash monitoring",
+  "fix_keywords": ["not-yet-trustworthy", "full"],
+  "obvious_but_wrong": "switch the runtimeVersion policy or enable the anti-bricking measures",
+  "avoid_keywords": ["switch the runtimeVersion policy", "switch RV policy"],
+  "source": "expo/expo #45772 (2026-05-14)"
+}

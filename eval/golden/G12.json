@@ -1,0 +1,17 @@
+{
+  "id": "G12",
+  "scenario": "S13",
+  "jtbd": 9,
+  "hamel_level": "L2",
+  "ci_block": true,
+  "title": "pnpm monorepo: Metro getPackage crash",
+  "symptom": "In the Energy-style pnpm monorepo, expo-router + Metro crash: Cannot read properties of undefined (reading getPackage) on expo>=55.0.10; or Unable to resolve module expo-router/entry inside the monorepo.",
+  "expected_root_cause": "pnpm's default isolated/symlink node_modules layout breaks RN/Metro tooling, which expects a flatter tree (confirmed in #44500, not theoretical)",
+  "root_cause_keywords": ["pnpm", "isolated", "layout"],
+  "expected_fix": "Set nodeLinker: hoisted in pnpm-workspace.yaml; do NOT set disableHierarchicalLookup:true; pin single react/react-native versions; on SDK 52+ delete manual watchFolders/resolver overrides from metro.config.js then expo start --clear; copy byCedric/expo-monorepo-example",
+  "fix_keywords": ["nodelinker", "hoisted"],
+  "obvious_but_wrong": "rewrite metro.config.js with manual watchFolders / resolver overrides (on SDK 52+ that's the old fix and can make it worse)",
+  "avoid_keywords": ["rewrite watchfolders", "rewrite the watchfolders"],
+  "pebble_answer": "Root cause: pnpm's default isolated/symlink node_modules layout breaks RN/Metro tooling, which expects a flatter tree. This surfaces as 'Cannot read properties of undefined (reading getPackage)' on expo>=55.0.10 or 'Unable to resolve module expo-router/entry' inside the monorepo. It is confirmed in #44500, not theoretical. Fix: set nodeLinker: hoisted in pnpm-workspace.yaml; do NOT set disableHierarchicalLookup:true; pin single react and react-native versions. On SDK 52+ delete the manual watchFolders / resolver.nodeModulesPath / extraNodeModules / disableHierarchicalLookup from metro.config.js (Metro auto-configures now), then npx expo start --clear. Copy byCedric/expo-monorepo-example's structure and budget separately for 'EAS Build assumes Yarn' friction. Do NOT rewrite metro.config.js with manual watchFolders / resolver overrides — on SDK 52+ that is the old fix and can make it worse.",
+  "source": "expo/expo #44500 (2026-04-09); docs.expo.dev/guides/monorepos"
+}

@@ -1,0 +1,17 @@
+{
+  "id": "G14",
+  "scenario": "S15",
+  "jtbd": 2,
+  "hamel_level": "L2",
+  "ci_block": true,
+  "title": "SDK-56 codemod ran, imports still broken",
+  "symptom": "You ran the official sdk-56-expo-router-react-navigation-replace codemod; the app still has unresolved/old imports in scattered files.",
+  "expected_root_cause": "The official SDK-56 codemod misses imports in ~25% of import sites (#46481, open) — codemods in this window are incomplete",
+  "root_cause_keywords": ["codemod", "25%", "#46481"],
+  "expected_fix": "Manually verify imports after any codemod — grep for the old import paths across the tree and fix the ~1-in-4 the codemod skipped; treat upgrade codemods as a first pass never the final word",
+  "fix_keywords": ["grep", "manual"],
+  "obvious_but_wrong": "trust the codemod ran clean and look elsewhere for the bug",
+  "avoid_keywords": ["trust the codemod ran clean", "trust the codemod"],
+  "pebble_answer": "Root cause: the official SDK-56 codemod (sdk-56-expo-router-react-navigation-replace) misses imports in roughly 25% of import sites — see #46481 (open). Codemods in this transition window are incomplete, so a clean-looking codemod run still leaves stray old imports scattered across the tree. Fix: manually verify imports after any codemod — grep for the old import paths across the whole tree and fix the ~1-in-4 sites the codemod skipped. Treat upgrade codemods as a first pass, never the final word. Do NOT trust the codemod ran clean and look elsewhere for the bug — the broken imports the codemod skipped are exactly where the bug is.",
+  "source": "expo/expo #46481 (2026-06-02)"
+}

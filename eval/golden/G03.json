@@ -1,0 +1,17 @@
+{
+  "id": "G03",
+  "scenario": "S3",
+  "jtbd": 5,
+  "hamel_level": "L2",
+  "ci_block": true,
+  "title": "'Native module cannot be null' after eas update",
+  "symptom": "App was fine; after an eas update, users crash on launch with 'Native module cannot be null'.",
+  "expected_root_cause": "A binary release was smuggled out as an OTA — the OTA's JS imported a native module that isn't in the installed binary (the change touched package.json deps / an app.config plugin / ios|android), and either the runtimeVersion didn't change or version wasn't bumped",
+  "root_cause_keywords": ["binary", "native module", "smuggled"],
+  "expected_fix": "Restore the matching binary OR rebuild + bump runtimeVersion; prevent it with the fingerprint runtimeVersion policy (it hashes the native graph so EAS refuses to send native-needing JS to old binaries)",
+  "fix_keywords": ["fingerprint", "rebuild", "runtimeversion"],
+  "obvious_but_wrong": "roll back JS / blame the new feature's React code",
+  "avoid_keywords": ["roll back the js", "roll back js"],
+  "pebble_answer": "Root cause: this is a binary release smuggled out as an OTA. The eas update shipped JS that imports a native module not present in the installed binary — the change actually touched package.json deps, an app.config.js plugin, or the ios/android native dirs, so it needed a new binary, not an OTA. EAS let the JS reach an old binary because the runtimeVersion did not change (or version was not bumped). Fix: restore the matching binary OR rebuild and bump the runtimeVersion. Prevent recurrence with the fingerprint runtimeVersion policy: it hashes the native dependency graph so EAS refuses to send native-needing JS to old binaries. Do NOT simply roll back the JS — that hides the boundary violation and it will recur on the next native-touching change.",
+  "source": "Abiodun Abdullahi, 'The Realities of OTA Updates with Expo', 2026-04"
+}

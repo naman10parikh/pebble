@@ -1,0 +1,16 @@
+{
+  "id": "G04",
+  "scenario": "S4",
+  "jtbd": 8,
+  "hamel_level": "L3",
+  "ci_block": false,
+  "title": "VisionCamera won't compile on EAS, you can't pin Xcode",
+  "symptom": "Rename failed: VisionCamera.build/.../AVCaptureSession+addAudioInput.o: No such file or directory. Adding the image field to eas.json to pin Xcode is rejected by eas-cli 18.7.0 with 'image is not allowed'.",
+  "expected_root_cause": "EAS auto-assigns Xcode 26 beta for SDK 54 and you do not control the Xcode version on managed EAS — it's derived from the SDK and the image pin is rejected; NitroModules and Xcode-26-beta object-file-rename handling are incompatible",
+  "root_cause_keywords": ["xcode", "eas", "auto-assign"],
+  "expected_fix": "Two levers only: downgrade the Expo SDK (SDK 53 forces Xcode 16.2 and compiles) or wait for the module to support the new Xcode; plan native-module upgrades around EAS's Xcode assignment",
+  "fix_keywords": ["downgrade", "wait"],
+  "obvious_but_wrong": "keep fighting the Xcode flags / patch VisionCamera locally",
+  "avoid_keywords": ["fight the xcode flags", "patch visioncamera"],
+  "source": "expo/eas-cli #3616 (2026-04-17)"
+}

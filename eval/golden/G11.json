@@ -1,0 +1,17 @@
+{
+  "id": "G11",
+  "scenario": "S12",
+  "jtbd": 7,
+  "hamel_level": "L2",
+  "ci_block": true,
+  "title": "Push never arrives in Expo Go",
+  "symptom": "You wire expo-notifications, test in Expo Go, and no remote push ever arrives (Android especially). The docs in places imply Expo Go can receive push.",
+  "expected_root_cause": "Remote (push) notifications were removed from Expo Go in SDK 53+ — a development build is required; separately Android requires FCM v1 (a Firebase service-account JSON), a project on the legacy server key won't deliver",
+  "root_cause_keywords": ["expo go", "sdk 53", "dev"],
+  "expected_fix": "Build a development build (eas build --profile development) and test push there, never in Expo Go; set up Android FCM v1 (service-account JSON uploaded to EAS credentials + google-services.json) and an iOS APNs key; re-fetch the rotating push token on launch",
+  "fix_keywords": ["development build", "fcm v1"],
+  "obvious_but_wrong": "keep debugging tokens/permissions inside Expo Go",
+  "avoid_keywords": ["debug tokens in expo go", "debugging tokens inside expo go"],
+  "pebble_answer": "Root cause: remote (push) notifications were removed from Expo Go in SDK 53+ — a development build is required. Even Expo's own docs were inconsistent about this (confirmed in #41118). Separately, Android requires FCM v1 (a Firebase service-account JSON); a project still on the legacy FCM server key will silently fail to deliver. Fix: build a development build (eas build --profile development) and test push there, never in Expo Go. Set up Android FCM v1 (service-account JSON uploaded to EAS credentials plus google-services.json) and an iOS APNs key. Re-fetch the rotating push token with getExpoPushTokenAsync() on launch and store it server-side. Local/in-app notifications are fine to keep testing in Expo Go. Do NOT keep debugging tokens or permissions inside Expo Go — remote push cannot work there, so you'll burn a cycle on something impossible.",
+  "source": "docs.expo.dev/push-notifications; expo/expo #41118 (2026-06-08)"
+}

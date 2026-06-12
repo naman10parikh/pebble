@@ -1,0 +1,16 @@
+{
+  "id": "G07",
+  "scenario": "S7",
+  "jtbd": 6,
+  "hamel_level": "L3",
+  "ci_block": false,
+  "title": "Apple pulled my AI app, '2.5.2'",
+  "symptom": "Apple silently blocks your updates, then pulls the app. You're told you violated Guideline 2.5.2. (Real cases: 'Anything', Replit, Vibecode — Dec 2025 to Mar 2026.)",
+  "expected_root_cause": "Guideline 2.5.2 — the app downloads, installs, or executes code which introduces or changes features post-review (users generate apps/tools that then RUN inside the native container); it is NOT because the app uses AI (there is no AI-specific guideline as of 2026-06-09)",
+  "root_cause_keywords": ["2.5.2", "executes code", "features"],
+  "expected_fix": "Ship a fixed, reviewed native shell; use OTA only for JS/asset iteration within the advertised purpose; if dynamic generated code must run, run it in a WebView/WebKit never the native runtime; appeal once and escalate to the App Review Board with a differentiation memo",
+  "fix_keywords": ["fixed", "shell", "webview"],
+  "obvious_but_wrong": "it's because the app uses AI / an LLM; also wrong: previewing generated code in a web browser as a cosmetic fix",
+  "avoid_keywords": ["because it uses ai", "because the app uses ai"],
+  "source": "MacRumors 2026-03-30 + 2026-06-09"
+}

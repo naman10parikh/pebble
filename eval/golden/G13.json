@@ -1,0 +1,16 @@
+{
+  "id": "G13",
+  "scenario": "S14",
+  "jtbd": 1,
+  "hamel_level": "L3",
+  "ci_block": false,
+  "title": "PWA or native in 3 weeks, agent app?",
+  "symptom": "A product/cost decision under time pressure. Someone insists 'a PWA can do everything now, Apple opened iOS to PWAs.'",
+  "expected_root_cause": "The PWA gap narrowed but iOS still has hard walls: push is home-screen-install-only / no silent/rich / EU-blocked; 7-day cache eviction; 50MB cap; no Background Sync/Fetch; no BLE/NFC. Engineers chronically overestimate iOS PWA capability",
+  "root_cause_keywords": ["3+", "native", "wall"],
+  "expected_fix": "Apply the '3+ -> native' rule over {BLE/NFC, GPU perf, widgets/Siri, large offline data, platform UI}; for an agent app go native the moment proactive notifications, background work, durable local memory, or any sensor matter; otherwise a PWA is legitimately enough and 40-60% cheaper",
+  "fix_keywords": ["3+", "native", "proactive"],
+  "obvious_but_wrong": "accept the PWA-overconfidence claim and ship a PWA for a use case that needs proactive push / background / durable local memory / sensors",
+  "avoid_keywords": ["accept the pwa-overconfidence", "pwa can do everything"],
+  "source": "magicbell PWA guides 2026; mobiloud"
+}

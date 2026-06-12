@@ -1,0 +1,16 @@
+{
+  "id": "G01",
+  "scenario": "S1",
+  "jtbd": 4,
+  "hamel_level": "L3",
+  "ci_block": false,
+  "title": "EAS builds fail at 'Prepare project', no code change, clustered",
+  "symptom": "tar -C /home/expo/workingdir/build --strip-components 1 -zxf project.tar.gz exited with non-zero code: 2. 15+ consecutive builds fail from a specific timestamp; the last good build hours earlier used identical code. EAS CLI 18.4.0, SDK 54, Windows 11, EAS_NO_VCS=1, ~839KB archive.",
+  "expected_root_cause": "EAS infra / build-VM image regression, not your code — a clustered, timestamped, no-code-change failure with a same-day tracker spike is an EAS-side break",
+  "root_cause_keywords": ["infra", "regression"],
+  "expected_fix": "Check EAS status + the expo/eas-cli tracker for a same-day cluster BEFORE touching the repo; confirm it started at a timestamp with no code change; wait for the infra fix or roll back the build image",
+  "fix_keywords": ["status", "tracker"],
+  "obvious_but_wrong": "debug your repo — clear cache, edit .easignore, reinstall node_modules, try image variants",
+  "avoid_keywords": ["clear cache", "reinstall node_modules"],
+  "source": "expo/eas-cli #3529 (2026-03-23)"
+}
