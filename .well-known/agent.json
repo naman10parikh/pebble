@@ -1,0 +1,92 @@
+{
+  "protocolVersion": "0.3.0",
+  "name": "pebble",
+  "description": "Energy mobile employee (RN/Expo/EAS). Takes a product idea to a shipped, store-safe, OTA-maintainable iOS + Android app: picks the shape (native/PWA/bare), scaffolds a New-Architecture-correct Expo app, builds & ships via EAS headlessly, maintains it via OTA within the wall, and survives App-Store review. A tool-employee consumed by coding agents and a local cockpit (no reachability face) — this card describes its CLI/MCP capabilities; pebble is not a hosted HTTP A2A endpoint. Powered by Energy.",
+  "version": "0.1.0",
+  "url": "https://github.com/naman10parikh/pebble",
+  "preferredTransport": "MCP",
+  "documentationUrl": "https://github.com/naman10parikh/pebble/blob/main/AGENTS.md",
+  "provider": {
+    "organization": "Energy (NRG)",
+    "url": "https://github.com/naman10parikh"
+  },
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "stateTransitionHistory": false
+  },
+  "defaultInputModes": ["text/plain", "application/json"],
+  "defaultOutputModes": ["text/plain", "application/json"],
+  "skills": [
+    {
+      "id": "shape-decision",
+      "name": "Decide the mobile shape",
+      "description": "Decide PWA vs native (and the native shape) for a product — especially an AI/agent app — via the '3+ → native' rule and the iOS PWA capability walls. Exposed as `pebble decide` and the `pebble_decide_shape` MCP tool.",
+      "tags": ["mobile", "decision", "pwa", "native", "expo"],
+      "examples": [
+        "PWA or native for an app that needs BLE + background location + push?",
+        "Should this agent app ship to the App Store at all?"
+      ]
+    },
+    {
+      "id": "expo-scaffold",
+      "name": "Scaffold a New-Arch Expo app",
+      "description": "Scaffold a correct, modern, New-Architecture-only Expo app with the SDK pinned explicitly, native deps installed the right way, and the expo-doctor gate. Exposed as `pebble init` and the `pebble_init` MCP tool.",
+      "tags": ["expo", "react-native", "scaffold", "new-architecture", "eas"],
+      "examples": [
+        "Scaffold a React Native app on SDK 56.",
+        "Start a new Expo project for the Energy pnpm monorepo."
+      ]
+    },
+    {
+      "id": "eas-build",
+      "name": "Build headlessly via EAS",
+      "description": "Run an EAS Build headlessly (--non-interactive --no-wait --json injected) and return a build id. Exposed as `pebble build` and the `pebble_eas_build` MCP tool.",
+      "tags": ["eas", "build", "headless", "ci"],
+      "examples": [
+        "Build the iOS app on the preview profile.",
+        "Kick off an Android EAS build and give me the build id."
+      ]
+    },
+    {
+      "id": "eas-submit",
+      "name": "Submit to the stores via EAS",
+      "description": "Submit a built app to the App Store / Play headlessly (ASC API key / Play service-account), warning on the documented manual-first-Play-upload wall. Exposed as `pebble submit` and the `pebble_eas_submit` MCP tool.",
+      "tags": ["eas", "submit", "app-store", "play"],
+      "examples": [
+        "Submit the latest iOS build to App Store Connect.",
+        "Submit to Play — flag any first-upload walls."
+      ]
+    },
+    {
+      "id": "eas-ota",
+      "name": "Ship an OTA update within the wall",
+      "description": "Ship a JS/asset-only OTA via `eas update` (--environment ENFORCED), rejecting any native-touching diff (the 'Native module cannot be null' wall = Apple Guideline 2.5.2). Exposed as `pebble update` and the `pebble_eas_update` MCP tool.",
+      "tags": ["eas", "ota", "expo-updates", "fingerprint"],
+      "examples": [
+        "Is this change safe to ship as an OTA?",
+        "Push a JS update to the production channel."
+      ]
+    },
+    {
+      "id": "store-review-preflight",
+      "name": "Pre-flight App-Store review",
+      "description": "Pre-flight an app (especially an AI/agent app) against App Store rejection BEFORE submit — the 2.5.2 self-modifying-code wall, 4.3 thin-wrapper/differentiation, the 5.1.2(i) consent modal, age rating, and the 1.2 UGC-removal duty. Exposed as `pebble review-check` and the `pebble_review_check` MCP tool.",
+      "tags": ["app-store", "review", "compliance", "guideline-2.5.2"],
+      "examples": [
+        "Will Apple reject this AI app?",
+        "Pre-flight the store-review risks before I submit."
+      ]
+    },
+    {
+      "id": "mobile-screenshot",
+      "name": "Verify as a USER (simulator screenshot)",
+      "description": "The verify-as-USER QA primitive — boot the app in the iOS simulator / Android emulator and capture a screenshot to READ ('it builds' means nothing). Exposed as `pebble screenshot` and the `pebble_screenshot` MCP tool.",
+      "tags": ["qa", "simulator", "screenshot", "simctl", "adb"],
+      "examples": [
+        "Boot the scaffold in the iOS simulator and screenshot it.",
+        "Capture an Android emulator screenshot of the home screen."
+      ]
+    }
+  ]
+}
