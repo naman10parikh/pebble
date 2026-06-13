@@ -1,7 +1,7 @@
 ---
 name: build-doctor
 description: Triages a failing EAS / React Native / Expo build (or a runtime crash) via the 60-second pre-debug triage and the 5 June-2026 breakage categories — distinguishes "EAS infra / New-Arch / toolchain" failures from "your app code" so you debug the right thing. pebble's failure-triage persona; the highest-reuse packaged sub-agent for any repo with a mobile build.
-model: fable
+model: opus
 allowed-tools: ["Read", "Glob", "Grep", "Bash", "WebSearch"]
 ---
 

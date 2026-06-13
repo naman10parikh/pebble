@@ -22,7 +22,7 @@ export { logRun, RUNS_LOG_PATH, type RunRecord, type RunStatus } from "./lib/log
 export { easBuild, easSubmit, easUpdate, easConfig, type Platform } from "./wrappers/eas.js";
 export { expoInstall, expoDoctor, expoExport, expoPrebuildClean } from "./wrappers/expo.js";
 export { simctlScreenshot, type ScreenshotResult } from "./wrappers/simctl.js";
-export { scaffoldInit, buildScaffoldArgs } from "./wrappers/scaffold.js";
+export { scaffoldInit, buildScaffoldArgs, easJsonScaffold, depositEasJson } from "./wrappers/scaffold.js";
 
 // The commander program builder (introspectable surface; CLI entry guards its own argv parse).
 export { buildProgram } from "./cli.js";

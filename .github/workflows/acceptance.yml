@@ -54,10 +54,12 @@ jobs:
       # 8 — validate the EAS build config offline (`eas config`, NOT a nonexistent --dry-run). EXPO_TOKEN-gated
       #     (guard on env.EXPO_TOKEN — the job env carries secrets.EXPO_TOKEN) + continue-on-error: its failure
       #     must not break the structural-only promise (step 7 already proved shape).
+      #     --profile is REQUIRED: `eas config` prompts "Select build profile" and fails non-interactively
+      #     without it (T-user 2026-06-13). `preview` is the profile the eas.json pebble init deposits (step 5).
       - name: eas config (full mode)
         if: ${{ env.EXPO_TOKEN != '' }}
         continue-on-error: true
-        run: npx eas-cli@20.1.0 config --platform ios --non-interactive
+        run: cd _acceptance && npx eas-cli@20.1.0 config --platform ios --profile preview --non-interactive
 
       # 9 — verify AS A USER: boot the iOS simulator + screenshot (the QA primitive). macOS-runner + token only.
       - name: Simulator screenshot (full mode)

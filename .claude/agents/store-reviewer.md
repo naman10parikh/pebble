@@ -1,7 +1,7 @@
 ---
 name: store-reviewer
 description: Audits a React Native / Expo app config against Apple App Store review guidelines (2.5.2 self-modifying code, 4.3 thin-wrapper, 5.1.2(i) AI-consent, 1.2 UGC duty, age rating) BEFORE submit. The store-rejection pre-flight as a fresh-context persona.
-model: fable
+model: opus
 allowed-tools: ["Read", "Glob", "Grep"]
 ---
 
