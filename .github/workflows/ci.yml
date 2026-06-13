@@ -36,21 +36,17 @@ jobs:
         id: rt
         run: |
           if [ -f package.json ]; then echo "armed=true" >> "$GITHUB_OUTPUT"; else echo "armed=false" >> "$GITHUB_OUTPUT"; fi
-      - uses: pnpm/action-setup@v4
-        if: steps.rt.outputs.armed == 'true'
-        with:
-          version: 9
       - uses: actions/setup-node@v4
         if: steps.rt.outputs.armed == 'true'
         with:
           node-version: 22
-          cache: pnpm
+          cache: npm
       - name: Install + build + test (red-blocking once code exists)
         if: steps.rt.outputs.armed == 'true'
         run: |
-          pnpm install --frozen-lockfile || pnpm install
-          pnpm build
-          pnpm test
+          npm ci || npm install
+          npm run build
+          npm test
       - name: Skeleton phase
         if: steps.rt.outputs.armed == 'false'
         run: echo "skeleton phase — build gate auto-arms when package.json lands (CP123 Wave B)"
