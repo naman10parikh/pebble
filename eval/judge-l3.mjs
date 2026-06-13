@@ -3,15 +3,17 @@
 // Scores the 7 nightly L3 golden tasks {G1,G2,G4,G7,G8,G10,G13} as TRAJECTORIES: a fresh pebble, given ONLY
 // the symptom (no answer key), must (1) name the documented root cause, (2) propose the documented fix, and
 // (3) avoid the named obvious-but-wrong path. Two model calls per task — generate (pebble-under-test) then
-// judge (the grader) — both carry an EXPLICIT model (CP123 D6: judges/critics = fable). Binary per-criterion.
+// judge (the grader) — both carry an EXPLICIT model. Binary per-criterion.
+//
+// Model routing (CP123 D12, 2026-06-12 — SUPERSEDES D6): Fable 5 is temporarily disabled → every CP123 node
+// runs on claude-opus-4-8[1m], max effort. enforce-cp123-models.js BLOCKS any explicit non-Opus model, so the
+// judge + pebble-under-test both route to opus. (Revert to the D6 fable judge/critic tier when Fable is back.)
 //
 // Token-gated (DECISIONS D8): runs only when ANTHROPIC_API_KEY (or CLAUDE_CODE_OAUTH_TOKEN) is present;
 // otherwise self-skips at $0 and returns true (a skip is not a failure). Uses raw HTTPS fetch against the
 // Messages API — no SDK dep (matches the repo's dependency-free MCP-server pattern; Node 22+ has global fetch).
 //
-// Model: claude-fable-5 (the CP123 "fable" judge/critic tier). Fable 5 request surface: omit `thinking`
-// (an explicit disabled 400s), no temperature/top_p/budget_tokens; structured output via output_config.format.
-// Source: PLAN §6 / §11; HARNESS-OVERRIDES §9; brain/BATTLE-TESTED-SCENARIOS.md; CP123 DECISIONS D6/D8.
+// Source: PLAN §6 / §11; HARNESS-OVERRIDES §9; brain/BATTLE-TESTED-SCENARIOS.md; CP123 DECISIONS D6/D8/D12.
 
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -22,9 +24,10 @@ const REPO_ROOT = join(HERE, "..");
 const GOLDEN_DIR = join(HERE, "golden");
 const SOUL_PATH = join(REPO_ROOT, "identity", "SOUL.md");
 
-// CP123 D6: judges/critics = fable. This is the routed identity X2/enforce-cp123-models asserts.
-const JUDGE_MODEL = "claude-fable-5";
-const PEBBLE_MODEL = "claude-fable-5"; // pebble-under-test runs on the same tier as the harness's own model.
+// CP123 D12 (SUPERSEDES D6): Fable disabled → every node routes to Opus. enforce-cp123-models.js BLOCKS any
+// explicit non-Opus model, so the routed identity X2 asserts is the Opus tier. (Revert to fable when Fable is back.)
+const JUDGE_MODEL = "claude-opus-4-8";
+const PEBBLE_MODEL = "claude-opus-4-8"; // pebble-under-test runs on the same tier as the harness's own model.
 
 const L3_IDS = new Set(["G01", "G02", "G04", "G07", "G08", "G10", "G13"]);
 const API_URL = "https://api.anthropic.com/v1/messages";
@@ -141,7 +144,7 @@ export async function runL3() {
   }
   const soul = readFileSync(SOUL_PATH, "utf8");
   const tasks = loadL3();
-  console.log(`eval L3 (trajectory · binary · model=${JUDGE_MODEL}, D6): ${tasks.length} nightly tasks`);
+  console.log(`eval L3 (trajectory · binary · model=${JUDGE_MODEL}, D12): ${tasks.length} nightly tasks`);
 
   let failed = 0;
   let judged = 0;

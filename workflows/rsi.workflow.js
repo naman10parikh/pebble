@@ -14,10 +14,10 @@
  * `--dry` runs OFFLINE (skips `npm view` + the eval network) but STILL emits the proposed-*.md file.
  *
  * The Claude half (L3 trajectory judge / synthesis) is GATED on CLAUDE_CODE_OAUTH_TOKEN (DECISIONS D8).
- * When it runs, every agent invocation carries an EXPLICIT model (CP123 D6: judges/critics = fable) —
- * see runClaudeHalf() below (the `model:` key is mandatory per enforce-cp123-models / MASTER-TODOS X2).
+ * When it runs, every agent invocation carries an EXPLICIT model (CP123 D12, SUPERSEDES D6: Fable disabled →
+ * opus) — see runClaudeHalf() below (the `model:` key is mandatory per enforce-cp123-models / MASTER-TODOS X2).
  *
- * Source: PLAN §3.8 / §11; HARNESS-OVERRIDES §RSI; dsip.json; MASTER-TODOS D2 + X2.
+ * Source: PLAN §3.8 / §11; HARNESS-OVERRIDES §RSI; dsip.json; MASTER-TODOS D2 + X2; DECISIONS D12.
  */
 
 import { spawnSync } from "node:child_process";
@@ -142,7 +142,7 @@ ${drifted
 
 ## Claude half (token-gated, D8)
 ${process.env.CLAUDE_CODE_OAUTH_TOKEN
-  ? "CLAUDE_CODE_OAUTH_TOKEN present → the L3 trajectory judge + synthesis would run here (model: fable, D6)."
+  ? "CLAUDE_CODE_OAUTH_TOKEN present → the L3 trajectory judge + synthesis would run here (model: opus, D12 — Fable disabled)."
   : "CLAUDE_CODE_OAUTH_TOKEN absent → L3 judge / synthesis skipped ($0). Set the token (CHAIRMAN-CHECKLIST) to light up the Claude half."}
 `;
   writeFileSync(file, body);
@@ -152,13 +152,14 @@ ${process.env.CLAUDE_CODE_OAUTH_TOKEN
 /**
  * The Claude half — token-gated (D8). NOT invoked in the deterministic $0 path. When CLAUDE_CODE_OAUTH_TOKEN
  * is set, this is where the L3 trajectory judge + brain-synthesis agent runs. Every agent call carries an
- * EXPLICIT model (CP123 D6: judges/critics = fable) — the `model:` key below is the routed identity X2 asserts.
+ * EXPLICIT model — the `model:` key below is the routed identity X2 asserts. CP123 D12 (2026-06-12, SUPERSEDES
+ * D6): Fable is temporarily disabled → every node routes to opus; enforce-cp123-models.js BLOCKS non-Opus.
  * (Kept as a guarded stub: the deterministic half ships now; the agent wiring lights up with the token.)
  */
 function runClaudeHalf() {
   if (!process.env.CLAUDE_CODE_OAUTH_TOKEN) return { ran: false };
-  // Explicit routing (D6 / enforce-cp123-models): the trajectory judge is a critic → fable.
-  const agentSpec = { role: "rsi-trajectory-judge", model: "fable", task: "Grade the 7 L3 scenarios (binary per-criterion)." };
+  // Explicit routing (D12 / enforce-cp123-models): Fable disabled → the trajectory judge routes to opus.
+  const agentSpec = { role: "rsi-trajectory-judge", model: "opus", task: "Grade the 7 L3 scenarios (binary per-criterion)." };
   // The actual `claude -p` invocation lands when the token is provisioned; the routed identity is fixed here.
   console.log(`[rsi] Claude half available — would dispatch ${agentSpec.role} with model: ${agentSpec.model}`);
   return { ran: true, model: agentSpec.model };
