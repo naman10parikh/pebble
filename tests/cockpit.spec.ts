@@ -106,13 +106,15 @@ async function main(): Promise<void> {
     await page.waitForSelector("#ask-q", { timeout: 8000 });
     await page.fill("#ask-q", "is this OTA safe to ship?");
     await page.click("#ask-btn");
-    await page.waitForSelector("#ask-answer", { timeout: 20000 });
+    // ask shells `pebble brain` → BM25 over the whole brain corpus, re-indexed cold per call.
+    // Measured cold latency is 22–31s (the index is rebuilt every invocation), so the round-trip
+    // budget must clear the worst case — 45s, not 20s, or the (correct) cited answer times out.
+    await page.waitForSelector("#ask-answer", { timeout: 45000 });
     // Mechanical citation check: the rendered answer DOM contains a brain/<note>.md reference.
-    // (ask shells `pebble brain` → BM25, ~6s.)
     await page.waitForFunction(() => {
       const a = document.querySelector("#ask-answer");
       return a && /brain\/[\w-]+\.md/.test(a.textContent || "");
-    }, { timeout: 20000 });
+    }, { timeout: 45000 });
     const answerTxt = await page.$eval("#ask-answer", (e) => e.textContent || "");
     const citeMatch = answerTxt.match(/brain\/[\w-]+\.md/);
     check("ask-the-employee returns a MECHANICALLY-CITED answer", Boolean(citeMatch), citeMatch ? citeMatch[0] : "no brain/*.md ref");
