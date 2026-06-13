@@ -8,3 +8,13 @@
 {"ts":"2026-06-13T07:52:26.860Z","cmd":"init /var/folders/18/n4yddnhj19q7h0kz0g1nd78m0000gn/T/tmp.f0ZuzUxB4y/app --sdk 56","durationMs":37531,"status":"ok"}
 {"ts":"2026-06-13T07:53:11.293Z","cmd":"init /var/folders/18/n4yddnhj19q7h0kz0g1nd78m0000gn/T/tmp.xhquoy37ZR/app --sdk 56","durationMs":18615,"status":"ok"}
 {"ts":"2026-06-13T07:57:05.270Z","cmd":"init /var/folders/18/n4yddnhj19q7h0kz0g1nd78m0000gn/T/tmp.FaYDizdFNP/_acceptance --sdk 56","durationMs":17625,"status":"ok"}
+{"ts":"2026-06-13T08:25:53.281Z","cmd":"init /tmp/pebble-tuser-74896/app --sdk 56","durationMs":21460,"status":"ok"}
+{"ts":"2026-06-13T08:38:43.819Z","cmd":"init /tmp/pebble-tuser-easfix-83606/app --sdk 56","durationMs":32497,"status":"ok"}
+{"ts":"2026-06-13T08:44:02.281Z","cmd":"doctor","durationMs":6598,"status":"ok"}
+{"ts":"2026-06-13T08:44:14.759Z","cmd":"build --platform ios --profile sim","durationMs":1125,"status":"error"}
+{"ts":"2026-06-13T08:44:31.329Z","cmd":"submit --platform ios","durationMs":798,"status":"error"}
+{"ts":"2026-06-13T08:44:32.782Z","cmd":"update --channel preview --environment production","durationMs":1138,"status":"error"}
+{"ts":"2026-06-13T08:44:47.144Z","cmd":"screenshot --platform ios","durationMs":68,"status":"error"}
+{"ts":"2026-06-13T08:45:00.813Z","cmd":"screenshot --platform ios","durationMs":87,"status":"error"}
+{"ts":"2026-06-13T08:45:02.001Z","cmd":"build --platform ios --profile sim","durationMs":840,"status":"error"}
+{"ts":"2026-06-13T08:45:03.438Z","cmd":"build --platform ios --profile sim","durationMs":1252,"status":"error"}
