@@ -47,6 +47,13 @@ jobs:
           npm ci || npm install
           npm run build
           npm test
+      # The eval pyramid's $0 deterministic half (L1 structural + L2 = the 7 binary golden tasks) is
+      # red-blocking on EVERY push/PR — not just the nightly rsi.yml cron. HARNESS-OVERRIDES §9 requires
+      # L1+L2 "red-blocking in CI"; npm test does NOT run eval/run.mjs, so wire it here. L3 is token-gated
+      # (D8) and stays out of the $0 gate. (The acceptance job runs L1 separately as its offline shape gate.)
+      - name: Eval pyramid L1+L2 (red-blocking, $0)
+        if: steps.rt.outputs.armed == 'true'
+        run: node eval/run.mjs
       - name: Skeleton phase
         if: steps.rt.outputs.armed == 'false'
         run: echo "skeleton phase — build gate auto-arms when package.json lands (CP123 Wave B)"
