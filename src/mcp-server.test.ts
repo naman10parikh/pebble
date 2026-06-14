@@ -75,6 +75,22 @@ test("missing required args throw a structured (catchable) error — not a crash
   );
 });
 
+// Wave T council MAJOR: a PRESENT-but-EMPTY `environment` over MCP must NOT slip past the SCENARIO-5
+// gate (it previously returned a success-shaped {ok:false} after shelling `eas update --environment ""`).
+// The shared-core guard now throws here too — same protection as the CLI surface.
+test("pebble_eas_update with an empty environment is REJECTED (SCENARIO-5 hole, both surfaces)", () => {
+  assert.throws(
+    () => callTool("pebble_eas_update", { channel: "x", environment: "", message: "y" }),
+    /non-empty --environment/,
+    "empty environment must throw (not return a success-shaped result)",
+  );
+  assert.throws(
+    () => callTool("pebble_eas_update", { channel: "x", environment: "   ", message: "y" }),
+    /non-empty --environment/,
+    "whitespace-only environment must throw too",
+  );
+});
+
 test("an unknown tool name throws (mapped to a structured JSON-RPC error upstream)", () => {
   assert.throws(() => callTool("pebble_nonexistent", {}), /Unknown tool/);
 });

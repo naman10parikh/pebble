@@ -361,8 +361,9 @@ function handleRequest(req: McpRequest): void {
       respond(id, callTool(name, args));
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      // -32602 for bad/unknown tool args, -32603 otherwise — structured, server stays alive.
-      const code = /required|must be|Unknown tool/.test(message) ? -32602 : -32603;
+      // -32602 for bad/unknown tool args (incl. the SCENARIO-5 empty-/missing-environment guard,
+      // which throws from the shared core), -32603 otherwise — structured, server stays alive.
+      const code = /requires?|must be|Unknown tool/.test(message) ? -32602 : -32603;
       respondError(id, code, message);
     }
     return;

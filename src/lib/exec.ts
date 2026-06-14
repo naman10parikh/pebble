@@ -40,7 +40,12 @@ export function runWrapped(cmd: WrappedCommand, opts: RunOptions = {}): RunResul
   const start = Date.now();
   const res = spawnSync(bin, args, {
     cwd: opts.cwd,
-    env: { ...process.env, ...opts.env },
+    // EXPO_NO_DOTENV=1 stops Expo CLI's built-in @expo/env loader from auto-reading the cwd's
+    // `.env` and announcing the exported var NAMES straight to /dev/tty (it bypasses our pipes,
+    // so we can't filter it). pebble manages toolchain env explicitly via opts.env — it never
+    // wants a spawned eas/expo to silently inherit a repo `.env`. Defense-in-depth + clean
+    // stdout contract for agents that scrape `pebble doctor`. Caller's opts.env still wins.
+    env: { EXPO_NO_DOTENV: "1", ...process.env, ...opts.env },
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
   });

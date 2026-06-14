@@ -53,6 +53,21 @@ test("assertUpdateEnvironment passes when --environment present (flag or key=val
   assert.doesNotThrow(() => assertUpdateEnvironment(["update", "--environment=prod"]));
 });
 
+// SCENARIO-5 hole (Wave T council MAJOR): a PRESENT-but-EMPTY --environment must throw too — it
+// shells `eas update --environment ""`, the exact CI break the gate exists to prevent. The check
+// lives in the shared core so BOTH the CLI and the MCP tool inherit it ("one core, two surfaces").
+test("assertUpdateEnvironment THROWS on empty/whitespace --environment value (SCENARIO 5 hole)", () => {
+  assert.throws(() => assertUpdateEnvironment(["update", "--channel", "x", "--environment", ""]), /non-empty --environment/);
+  assert.throws(() => assertUpdateEnvironment(["update", "--channel", "x", "--environment", "   "]), /non-empty --environment/);
+  assert.throws(() => assertUpdateEnvironment(["update", "--environment="]), /non-empty --environment/);
+  // A trailing --environment flag with no following token is empty too.
+  assert.throws(() => assertUpdateEnvironment(["update", "--channel", "x", "--environment"]), /non-empty --environment/);
+});
+
+test("wrapEas update with empty --environment throws (gate fires before spawn — both surfaces)", () => {
+  assert.throws(() => wrapEas(["update", "--channel", "x", "--environment", "", "--message", "y"]), /non-empty --environment/);
+});
+
 test("assertUpdateEnvironment ignores non-update commands", () => {
   assert.doesNotThrow(() => assertUpdateEnvironment(["build", "--platform", "ios"]));
 });

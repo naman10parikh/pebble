@@ -103,6 +103,19 @@ test("WIRE tools/call: missing required arg → a structured -32602 error, serve
   assert.equal((after!.result as { tools: unknown[] }).tools.length, 10, "the server kept serving after the error");
 });
 
+test("WIRE tools/call: empty environment on pebble_eas_update → -32602 (SCENARIO-5 hole closed)", () => {
+  // The Wave T council found this returned a success-shaped result; it must now be a structured -32602.
+  const res = rpc({
+    jsonrpc: "2.0",
+    id: 24,
+    method: "tools/call",
+    params: { name: "pebble_eas_update", arguments: { channel: "x", environment: "", message: "y" } },
+  });
+  assert.equal(res!.result, undefined, "no success-shaped result on the gated path");
+  assert.equal(res!.error?.code, -32602, "empty --environment → invalid params, not a shelled EAS call");
+  assert.match(res!.error!.message, /non-empty --environment/, "the error names the SCENARIO-5 invariant");
+});
+
 test("WIRE tools/call: an unknown tool name → -32602 structured error (mapped, not crashed)", () => {
   const res = rpc({
     jsonrpc: "2.0",

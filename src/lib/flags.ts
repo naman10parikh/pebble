@@ -24,19 +24,31 @@ export function injectNonInteractive(args: readonly string[]): string[] {
 
 /**
  * `eas update` FAILS on SDK 55+ without `--environment` (KNOWN-PITFALLS §9, SCENARIO 5).
- * pebble's policy (PLAN §14 Q8) is fail-safe: always require it. Throws if the caller
- * tried to run `update` without naming an environment — caught BEFORE spawning.
+ * pebble's policy (PLAN §14 Q8) is fail-safe: always require a NON-EMPTY environment. Throws if the
+ * caller ran `update` without naming an environment OR with an empty/whitespace value — caught BEFORE
+ * spawning. The empty-value case matters because `--environment ""` is present-but-useless: it
+ * shells `eas update --environment ""` and reproduces the exact CI break the gate exists to prevent.
+ * Living here (the shared core) means BOTH surfaces — CLI and MCP — inherit one SCENARIO-5 guard
+ * (EMPLOYEE-FIRST "one core, two surfaces", PLAN §3.7).
  */
 export function assertUpdateEnvironment(args: readonly string[]): void {
   const isUpdate = args[0] === "update";
   if (!isUpdate) return;
-  const hasEnv =
-    args.includes(ENVIRONMENT) ||
-    args.some((a) => a.startsWith(`${ENVIRONMENT}=`));
-  if (!hasEnv) {
+  const flagIdx = args.indexOf(ENVIRONMENT);
+  const inlineEnv = args.find((a) => a.startsWith(`${ENVIRONMENT}=`));
+  // Resolve the actual value the way eas-cli would: `--environment <value>` (next token) or
+  // `--environment=<value>` (inline). A flag with no following token counts as empty too.
+  const value =
+    flagIdx !== -1
+      ? (args[flagIdx + 1] ?? "")
+      : inlineEnv !== undefined
+        ? inlineEnv.slice(`${ENVIRONMENT}=`.length)
+        : undefined;
+  if (value === undefined || value.trim() === "") {
     throw new Error(
-      "pebble: `eas update` requires --environment (mandatory on SDK 55+). " +
-        "Omitting it is the #1 CI break (SCENARIO 5). Pass --environment <env>.",
+      "pebble: `eas update` requires a non-empty --environment (mandatory on SDK 55+). " +
+        "Omitting it (or passing an empty value) is the #1 CI break (SCENARIO 5). " +
+        "Pass --environment <production|preview|development>.",
     );
   }
 }

@@ -121,5 +121,9 @@ export function runDecide(brief: string): number {
     console.log("iOS PWA walls:");
     for (const w of d.iosPwaWalls) console.log(`  - ${w}`);
   }
+  // Name the resolving brain files so the answer is actually CITED — the rationale references
+  // SCENARIO 14 / OPINIONS S15 in prose, but the cockpit's mechanical citation set keys off
+  // `brain/<note>.md` paths. Emitting them keeps the chairman's sourced-answer promise (PLAN §10).
+  console.log("source: brain/BATTLE-TESTED-SCENARIOS.md brain/OPINIONS.md");
   return 0;
 }

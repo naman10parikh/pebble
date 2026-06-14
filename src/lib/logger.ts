@@ -27,15 +27,38 @@ export interface RunRecord {
   status: RunStatus;
 }
 
-/** Strings that must never reach the log (defense-in-depth — wrappers already avoid passing secrets). */
-const SECRET_KEYS = ["EXPO_TOKEN", "ANTHROPIC_API_KEY", "E2B_API_KEY", "sk-", "bb_"];
+/**
+ * Secret patterns that must never reach the log (defense-in-depth — wrappers already avoid passing
+ * secrets). Two shapes:
+ *   - env-var names: redact the VALUE after `NAME=` (the name itself is not a secret).
+ *   - bare-prefix tokens (sk-…, bb_…): the whole run of non-whitespace from the prefix is the secret.
+ */
+const SECRET_ENV_NAMES = ["EXPO_TOKEN", "ANTHROPIC_API_KEY", "E2B_API_KEY"];
+const SECRET_PREFIXES = ["sk-", "bb_"];
 
+/**
+ * Redact secret SUBSTRINGS only, preserving the leading verb so the runs.jsonl rollup can still
+ * bucket the command (e.g. `update --channel x` survives even if a token rode along). The safety
+ * property is unchanged — no secret VALUE ever lands in the log; we just stop nuking the whole cmd.
+ */
 function scrub(value: string): string {
   let out = value;
-  for (const key of SECRET_KEYS) {
-    if (out.includes(key)) out = "[redacted]";
+  // `NAME=<value>` → `NAME=[redacted]` (value is the secret; the name is safe to keep).
+  for (const name of SECRET_ENV_NAMES) {
+    out = out.replace(new RegExp(`(${name})=\\S*`, "g"), "$1=[redacted]");
+    // A bare mention with no `=value` (shouldn't happen, but be safe): drop the token only.
+    out = out.replace(new RegExp(`(?<![\\w=])${name}(?![\\w=])`, "g"), "[redacted]");
+  }
+  // Bare-prefix tokens (sk-…, bb_…): redact the prefix + following non-whitespace run.
+  for (const prefix of SECRET_PREFIXES) {
+    out = out.replace(new RegExp(`${escapeRe(prefix)}\\S*`, "g"), "[redacted]");
   }
   return out;
+}
+
+/** Escape a literal string for use inside a RegExp (the prefixes contain `-`). */
+function escapeRe(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 /** Append one run record to logs/runs.jsonl. Best-effort: a logging failure must never crash a command. */
