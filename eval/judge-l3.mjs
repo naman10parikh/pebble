@@ -5,12 +5,11 @@
 // (3) avoid the named obvious-but-wrong path. Two model calls per task — generate (pebble-under-test) then
 // judge (the grader) — both carry an EXPLICIT model. Binary per-criterion.
 //
-// Model routing (CP123 D12, 2026-06-12 — SUPERSEDES D6): Fable 5 is temporarily disabled → every CP123 node
-// runs on claude-opus-4-8[1m], max effort. enforce-cp123-models.js BLOCKS any explicit non-Opus model, so the
-// judge + pebble-under-test both route to opus. (Revert to the D6 fable judge/critic tier when Fable is back.)
+// Model routing: the person names the model in PEBBLE_L3_MODEL, and both calls use it. The Messages API needs a
+// model name and pebble never picks one, because a fixed ID goes stale.
 //
-// Token-gated (DECISIONS D8): runs only when ANTHROPIC_API_KEY (or CLAUDE_CODE_OAUTH_TOKEN) is present;
-// otherwise self-skips at $0 and returns true (a skip is not a failure). Uses raw HTTPS fetch against the
+// Token-gated (DECISIONS D8): runs only when ANTHROPIC_API_KEY (or CLAUDE_CODE_OAUTH_TOKEN) and PEBBLE_L3_MODEL are
+// present; otherwise it self-skips at $0 and returns true (a skip is not a failure). Uses raw HTTPS fetch against the
 // Messages API — no SDK dep (matches the repo's dependency-free MCP-server pattern; Node 22+ has global fetch).
 //
 // Source: PLAN §6 / §11; HARNESS-OVERRIDES §9; brain/BATTLE-TESTED-SCENARIOS.md; CP123 DECISIONS D6/D8/D12.
@@ -24,10 +23,10 @@ const REPO_ROOT = join(HERE, "..");
 const GOLDEN_DIR = join(HERE, "golden");
 const SOUL_PATH = join(REPO_ROOT, "identity", "SOUL.md");
 
-// CP123 D12 (SUPERSEDES D6): Fable disabled → every node routes to Opus. enforce-cp123-models.js BLOCKS any
-// explicit non-Opus model, so the routed identity X2 asserts is the Opus tier. (Revert to fable when Fable is back.)
-const JUDGE_MODEL = "claude-opus-4-8";
-const PEBBLE_MODEL = "claude-opus-4-8"; // pebble-under-test runs on the same tier as the harness's own model.
+// The model both L3 calls use (pebble-under-test and the judge), named by the person; empty when unset.
+function l3Model() {
+  return process.env.PEBBLE_L3_MODEL?.trim() ?? "";
+}
 
 const L3_IDS = new Set(["G01", "G02", "G04", "G07", "G08", "G10", "G13"]);
 const API_URL = "https://api.anthropic.com/v1/messages";
@@ -88,7 +87,7 @@ async function pebbleDiagnose(task, soul) {
     "\n\nYou are diagnosing a real React Native / Expo / EAS failure. Given ONLY the symptom, state the " +
     "root cause, the fix, and explicitly name the obvious-but-wrong path to avoid. Be specific and concise.";
   const user = `Symptom:\n${task.symptom}\n\nWhat is the root cause, the fix, and the obvious-but-wrong path to avoid?`;
-  const resp = await callMessages({ model: PEBBLE_MODEL, system, user, maxTokens: 700 });
+  const resp = await callMessages({ model: l3Model(), system, user, maxTokens: 700 });
   return textOf(resp);
 }
 
@@ -119,7 +118,7 @@ async function judgeTrajectory(task, candidate) {
       required: ["names_root_cause", "proposes_fix", "avoids_wrong_path", "reason"],
     },
   };
-  const resp = await callMessages({ model: JUDGE_MODEL, system, user, maxTokens: 500, format });
+  const resp = await callMessages({ model: l3Model(), system, user, maxTokens: 500, format });
   const raw = textOf(resp);
   try {
     return JSON.parse(raw);
@@ -134,8 +133,8 @@ async function judgeTrajectory(task, candidate) {
  * OR if the run was skipped ($0, no token). Returns false only on a real judged failure.
  */
 export async function runL3() {
-  if (!apiKey()) {
-    console.log("eval L3 (trajectory · token-gated D8): ANTHROPIC_API_KEY/CLAUDE_CODE_OAUTH_TOKEN absent — skipping ($0). rc 0.");
+  if (!apiKey() || !l3Model()) {
+    console.log("eval L3 (trajectory · token-gated D8): ANTHROPIC_API_KEY/CLAUDE_CODE_OAUTH_TOKEN or PEBBLE_L3_MODEL absent, skipping ($0). rc 0.");
     return true;
   }
   if (!existsSync(SOUL_PATH)) {
@@ -144,7 +143,7 @@ export async function runL3() {
   }
   const soul = readFileSync(SOUL_PATH, "utf8");
   const tasks = loadL3();
-  console.log(`eval L3 (trajectory · binary · model=${JUDGE_MODEL}, D12): ${tasks.length} nightly tasks`);
+  console.log(`eval L3 (trajectory · binary · model=${l3Model()}): ${tasks.length} nightly tasks`);
 
   let failed = 0;
   let judged = 0;
