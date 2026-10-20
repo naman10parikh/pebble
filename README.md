@@ -149,6 +149,26 @@ is kept as a run artifact for a person to review. It never merges, and a failing
 - **`dsip.json` + `workflows/rsi.workflow.js`** — the deterministic nightly self-improvement loop.
 
 <!-- fleet:anatomy:start -->
+## What it is made of
+
+Every project in this fleet is graded on the same 11 harness components and on self-improvement. Each mark is backed by a file you can open.
+
+| Component | Grade | Where |
+| --- | --- | --- |
+| Identity | ✅ | identity/SOUL.md:7 |
+| Memory | ✅ | scripts/memory-search.sh:118 |
+| Skills | ✅ | skills/ota-safety/SKILL.md:1 |
+| Tools/CLIs | ✅ | package.json:7 |
+| Hooks | ✅ | .claude/settings.json:5 |
+| Sub-agents | ✅ | .claude/agents/build-doctor.md:2 |
+| MCPs | ✅ | src/mcp-server.ts:79 |
+| Dispatch | ✅ | src/router.ts:38 |
+| Evals | ✅ | .github/workflows/ci.yml:56 |
+| Observability | ✅ | src/lib/logger.ts:3 |
+| Sandbox/Infra | ✅ | src/sandbox/run.mjs:49 |
+| RSI / open-endedness | ✅ | dsip.json:27 |
+
+✅ real and tested · 🟡 partial, with the reason in the row · ❌ absent
 <!-- fleet:anatomy:end -->
 
 ## Siblings
