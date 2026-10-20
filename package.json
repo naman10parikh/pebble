@@ -4,12 +4,17 @@
   "description": "Energy mobile employee — React Native + Expo + EAS, operated headlessly as an agent",
   "type": "module",
   "bin": {
-    "pebble": "./dist/cli.js"
+    "pebble": "./dist/cli.js",
+    "pebble-mcp": "./dist/mcp-server.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist/",
+    "brain/",
+    "scripts/memory-search.sh",
+    "skills/",
+    "AGENTS.md",
     "README.md",
     "LICENSE"
   ],
@@ -30,6 +35,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
+    "prepare": "npm run build",
     "test": "tsc -p tsconfig.test.json && node --test \"dist-test/**/*.test.js\" \"eval/**/*.test.mjs\" \"scripts/**/*.test.mjs\"",
     "prepublishOnly": "npm run build && npm test"
   },

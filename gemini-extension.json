@@ -1,0 +1,17 @@
+{
+  "name": "pebble",
+  "version": "0.1.0",
+  "description": "Ships React Native and Expo apps headlessly: shape call, scaffold, EAS build, OTA and store review.",
+  "contextFileName": "GEMINI.md",
+  "mcpServers": {
+    "pebble": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "-p",
+        "github:naman10parikh/pebble",
+        "pebble-mcp"
+      ]
+    }
+  }
+}

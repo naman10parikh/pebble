@@ -20,6 +20,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Install and build (the eval pyramid runs the built CLI; dist/ is not committed)
+        run: npm ci && npm run build
       - name: Run the deterministic RSI half
         env:
           # Token-gated Claude half (D8). Absent on a fresh repo → the runner stays $0 and the deterministic half still runs.
@@ -30,3 +32,11 @@ jobs:
         run: |
           echo "Latest RSI proposal:"
           ls -1 brain/research/proposed-*.md 2>/dev/null | tail -1 || echo "(no proposal written)"
+      - name: Keep the proposal for review (never merged by the loop)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: brain-refresh-proposal
+          path: brain/research/proposed-*.md
+          if-no-files-found: ignore
+          retention-days: 30

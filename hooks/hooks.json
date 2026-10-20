@@ -1,0 +1,16 @@
+{
+  "description": "pebble's plugin hook: blocks an eas or expo command that is missing --non-interactive, and an eas update missing --environment, before it runs. It acts only on eas and expo commands. The run logger stays in this repo's own .claude/settings.json, because it writes logs/runs.jsonl into the open project.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/pretooluse-mobile-gate.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}

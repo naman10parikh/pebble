@@ -8,7 +8,7 @@
 
 | Check                              | Frequency        | Action on anomaly                                                        |
 | ---------------------------------- | ---------------- | ------------------------------------------------------------------------ |
-| `re-verify-tool-matrix` (Rule 0)   | nightly (cron)   | `npm view` RN/expo/eas-cli; if a major moved vs `brain/TOOL-MATRIX.md` §1 → write a `brain/research/proposed-*.md` refresh proposal (gated PR, never auto-merge) |
+| `re-verify-tool-matrix` (Rule 0)   | nightly (cron)   | `npm view` RN/expo/eas-cli; if a major moved vs `brain/TOOL-MATRIX.md` §1 → write a `brain/research/proposed-*.md` refresh proposal (kept as a run artifact for a person to review; never auto-merged) |
 | `run-eval-pyramid` (no-regression) | nightly + on PR  | shell `node eval/run.mjs --l1 --l2`; if a previously-green golden task regresses → fail the gate, do not ship |
 | Acceptance test                    | every push/PR    | `.github/workflows/acceptance.yml` (macos-latest); red-blocking — if it fails, the repo is not "done" |
 | Brain freshness (GAPS shrink)      | nightly          | a *growing* `brain/GAPS-AND-DISPUTES.md` means the loop isn't learning — flag for the Claude half (token-gated, D8) |

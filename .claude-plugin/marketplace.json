@@ -1,0 +1,14 @@
+{
+  "name": "pebble",
+  "owner": {
+    "name": "Naman Parikh",
+    "url": "https://github.com/naman10parikh"
+  },
+  "plugins": [
+    {
+      "name": "pebble",
+      "source": "./",
+      "description": "Ships React Native and Expo apps headlessly: shape call, scaffold, EAS build, OTA and store review."
+    }
+  ]
+}

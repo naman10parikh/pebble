@@ -25,6 +25,17 @@ is **SDK 56 / RN 0.85** (RN 0.86.0 already on npm), Legacy Architecture **remove
 `newArchEnabled:false` escape hatch), Hermes V1 default, CodePush dead, Expo Go demoted to a beginner tool. Run
 `pebble version-check` (which shells `npm view`) before pinning anything. (`brain/KNOWN-PITFALLS.md` §0, §9.)
 
+## Install in one step
+
+```bash
+npx -y -p github:naman10parikh/pebble pebble --help        # the CLI
+npx -y -p github:naman10parikh/pebble pebble-mcp           # the MCP server (stdio)
+claude mcp add --transport stdio pebble -- npx -y -p github:naman10parikh/pebble pebble-mcp
+```
+
+In Claude Code, `/plugin install pebble --marketplace naman10parikh/pebble` brings the 5 skills, the two personas,
+the headless-flag hook and the MCP server together.
+
 ## How to call pebble
 
 ### CLI (`pebble <cmd>`)
@@ -48,8 +59,8 @@ non-zero on failure; pebble never writes a secret to stdout/logs.
 
 ### MCP server (JSON-RPC over stdio)
 
-Same core as the CLI (one core, two surfaces). Registered in [`.mcp.json`](.mcp.json) as the `pebble` server;
-`tools/list` returns:
+Same core as the CLI (one core, two surfaces). Its bin is `pebble-mcp`; the root [`.mcp.json`](.mcp.json) starts it
+straight from GitHub as `pebble`, and `.mcp.dev.json` starts the local build. `tools/list` returns:
 
 ```
 pebble_decide_shape   { brief, needs? }                 → { shape, rationale, ios_pwa_walls? }
@@ -102,5 +113,4 @@ the 60-second triage + the 5 breakage categories — the highest-reuse fleet per
 `.github/workflows/acceptance.yml` (red-blocking, `macos-latest`): `pebble version-check` → `pebble init
 ./_acceptance --sdk 56 --template default@sdk-56` → `pebble doctor` → `eas config --platform ios
 --non-interactive` → `pebble screenshot --platform ios ./_acceptance/boot.png` → `test -s boot.png`. Degrades to
-structural-only (scaffold + doctor + L1 shape gate still red-block) when `EXPO_TOKEN` is unprovisioned. Full
-contract: [`PLAN.md`](PLAN.md) §5.
+structural-only (scaffold + doctor + L1 shape gate still red-block) when `EXPO_TOKEN` is unprovisioned.

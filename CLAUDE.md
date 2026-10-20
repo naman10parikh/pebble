@@ -1,3 +1,5 @@
+@AGENTS.md
+
 # pebble — Energy Mobile Employee (operating rules)
 
 > **pebble** is the Energy fleet's **mobile** employee: **React Native · Expo · EAS only.** It takes a
@@ -91,6 +93,14 @@ pebble does **NOT** own and will name the right sibling for:
 - **Generic web deploy/CI** → **rocket** — *seam:* pebble authors the `eas`-invoking GHA steps; rocket owns Vercel/web deploy + the surrounding GHA conventions.
 - **Building Flutter/Dart or native-only Swift/Kotlin apps** — pebble *recommends* native when it's right (JTBD-1) but *builds* in RN/Expo.
 
+## MCP servers
+
+The root `.mcp.json` is what a stranger and the plugin load: pebble's own server, started from GitHub with
+`npx -y -p github:naman10parikh/pebble pebble-mcp`, plus context7; neither needs a secret. `EXPO_TOKEN` and
+`E2B_API_KEY` are read from the environment when present. To work on pebble itself, `claude --mcp-config
+.mcp.dev.json` also loads the local build (`pebble-local`, `node dist/mcp-server.js`, after `npm run build`),
+GitHub (needs `GITHUB_PERSONAL_ACCESS_TOKEN`), memory (`memory/MEMORY.md`) and obsidian (`brain/`).
+
 ## Operating model
 
 Act, don't ask. Test as a USER (screenshot, READ it). **Aggressive on research/exploration; surgical on edits**
@@ -100,4 +110,4 @@ Act, don't ask. Test as a USER (screenshot, READ it). **Aggressive on research/e
 ## Commit convention
 
 `feat(skill):` · `feat(employee):` · `feat(company):` — so git snap-back works at all 3 granularities
-(`dsip.json` snapback: component + repo).
+(`dsip.json` snapback: skill + employee).
