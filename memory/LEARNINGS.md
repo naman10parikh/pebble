@@ -9,3 +9,7 @@ Every error → root cause → rule. Auto-compressed when >500 lines (memory-com
 
 ## 2026-10-19 — what the plugin may run in a stranger's project
 **Rule:** the plugin's `hooks/hooks.json` carries only the headless-flag gate, which acts on `eas` and `expo` commands alone. The EAS run logger stays in this repo's `.claude/settings.json`, because it writes `logs/runs.jsonl` into whatever project is open. The plugin no longer ships energy's inherited slash commands.
+
+## 2026-10-19 — the acceptance pin aged out
+**What broke:** the acceptance workflow failed at `pebble doctor`: expo-doctor now flags SDK 56 for a Hermes V1 memory regression (fixed in expo 57.0.9).
+**Rule:** Rule 0 applies to pebble's own gates. The acceptance scaffold follows npm's current SDK (58 on 19 October, doctor 20/20); the brain and the scaffold skill still describe SDK 56 until a person reviews the loop's refresh proposal.

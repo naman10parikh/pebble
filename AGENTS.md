@@ -111,6 +111,6 @@ the 60-second triage + the 5 breakage categories — the highest-reuse fleet per
 ## The acceptance test (the operational "done" bar)
 
 `.github/workflows/acceptance.yml` (red-blocking, `macos-latest`): `pebble version-check` → `pebble init
-./_acceptance --sdk 56 --template default@sdk-56` → `pebble doctor` → `eas config --platform ios
+./_acceptance --sdk 58 --template default@sdk-58` → `pebble doctor` → `eas config --platform ios
 --non-interactive` → `pebble screenshot --platform ios ./_acceptance/boot.png` → `test -s boot.png`. Degrades to
 structural-only (scaffold + doctor + L1 shape gate still red-block) when `EXPO_TOKEN` is unprovisioned.

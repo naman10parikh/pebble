@@ -39,7 +39,9 @@ jobs:
 
       # 5 — scaffold on a fresh isolated dir, SDK pinned explicitly (never the @latest transition default).
       - name: Scaffold (pinned SDK)
-        run: node dist/cli.js init ./_acceptance --sdk 56 --template default@sdk-56
+        # SDK 58 (npm latest, 19 Oct 2026): expo-doctor now fails SDK 56 on a Hermes V1 memory regression fixed in
+        # 57.0.9. Rule 0 says trust npm and the doctor over the brain; the brain refresh to 58 waits for review.
+        run: node dist/cli.js init ./_acceptance --sdk 58 --template default@sdk-58
 
       # 6 — the cheapest health gate (expo-doctor + Rule 0 + 60s triage).
       - name: Doctor (health gate)
