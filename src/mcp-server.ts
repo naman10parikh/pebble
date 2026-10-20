@@ -19,6 +19,7 @@
  */
 
 import { createInterface } from "node:readline";
+import { realpathSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 
 // The SAME core the CLI consumes — pure decision cores + headless toolchain wrappers.
@@ -394,8 +395,16 @@ function startStdioServer(): void {
 
 // Only open stdin when this file is the actual process entrypoint (node dist/mcp-server.js).
 // Importing it (the contract test, a future cockpit) must NOT open stdin — that would hang `node --test`.
-const isEntrypoint =
-  process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+// npm runs a bin through a symlink (node_modules/.bin/pebble-mcp), so compare against the real path.
+const isEntrypoint = ((): boolean => {
+  const entry = process.argv[1];
+  if (entry === undefined) return false;
+  try {
+    return import.meta.url === pathToFileURL(realpathSync(entry)).href;
+  } catch {
+    return false; // Intentionally silent: an unresolvable argv[1] means we were not run directly.
+  }
+})();
 if (isEntrypoint) {
   startStdioServer();
 }

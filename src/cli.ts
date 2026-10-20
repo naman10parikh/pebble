@@ -5,7 +5,7 @@
 // screenshot/review-check/runs). This file is the WIRING + arg parsing + help only.
 // Source: PLAN §4 CLI command tree, HARNESS-OVERRIDES §4, MASTER-TODOS B2.
 
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { Command } from "commander";
@@ -148,9 +148,17 @@ export function buildProgram(): Command {
 }
 
 // Only parse argv when run as the actual entrypoint (not when imported by a test/MCP).
-// Compare this module's URL to argv[1]'s file URL — true only when `node dist/cli.js …` ran us.
-const isEntrypoint =
-  process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+// Compare this module's URL to argv[1]'s real file URL. npm runs a bin through a symlink
+// (node_modules/.bin/pebble), so resolve it first; without that, an installed `pebble` printed nothing.
+const isEntrypoint = ((): boolean => {
+  const entry = process.argv[1];
+  if (entry === undefined) return false;
+  try {
+    return import.meta.url === pathToFileURL(realpathSync(entry)).href;
+  } catch {
+    return false; // Intentionally silent: an unresolvable argv[1] means we were not run directly.
+  }
+})();
 if (isEntrypoint) {
   buildProgram().parseAsync(process.argv).catch((err: unknown) => {
     console.error("pebble:", err instanceof Error ? err.message : String(err));
