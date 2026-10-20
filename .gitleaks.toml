@@ -1,0 +1,10 @@
+# pebble's gitleaks baseline: every upstream rule, plus one narrow allowlist entry.
+#
+# .env.example holds placeholders (for example REPLACE_WITH_...) that show which keys to set; it never holds a key.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "placeholders in .env.example, not credentials"
+paths = ['''(^|/)\.env\.example$''']
