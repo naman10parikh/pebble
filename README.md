@@ -1,38 +1,112 @@
 # pebble
 
-> *"the small thing you ship to a pocket."* — powered by Energy
+<!-- fleet:header:start -->
+[![License: MIT](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE) [![Agent-native](https://img.shields.io/badge/agent--native-yes-2f5d8a?style=flat-square)](AGENTS.md) [![MCP server](https://img.shields.io/badge/MCP-server-1e3f60?style=flat-square)](#use-it-from-any-coding-agent) [![Skills](https://img.shields.io/badge/skills-5-2f6b4f?style=flat-square)](skills/)
 
-**pebble is the Energy fleet's mobile employee** — a recursively self-improving, agent-native harness for
-**React Native · Expo · EAS**, operated **headlessly as an agent**, not a human at a TTY. Give it a product
-idea and it picks the right *shape* (native/PWA/bare), scaffolds a **New-Architecture-correct** Expo app, builds
-& ships via **EAS**, maintains it via **OTA within the wall**, and survives **App-Store review** — from real
-June-2026 postmortems, not a tutorial.
+**Ships React Native and Expo apps headlessly: shape call, scaffold, EAS build, OTA and store review.**
 
-pebble is a **tool-employee**: consumed by coding agents (Claude Code, energy, a sibling employee) and the
-chairman's local cockpit. Its surfaces are the **`pebble` CLI**, an **MCP server**, and the cockpit — there is
-no chat/WhatsApp face.
+Pebble is an agent-native, recursively self-improving agent employee whose job is mobile. Coding agents use it through its skills, its MCP server and its command line. It improves itself through its own evals and a scheduled improvement loop, and a person reviews every change.
 
-## ⚠️ Rule 0 — never quote a version from memory
+[AGENTS.md](AGENTS.md) · [llms.txt](llms.txt) · [Skills](skills/) · [Security](SECURITY.md) · [Contributing](CONTRIBUTING.md) · [All projects](https://github.com/naman10parikh)
+<!-- fleet:header:end -->
+
+> *"the small thing you ship to a pocket."* Powered by Energy.
+
+Pebble is a mobile engineer for coding agents: React Native, Expo and EAS, run headlessly, never a person at a TTY.
+Give it a product idea and it picks the right shape (native, PWA or bare), scaffolds a New Architecture Expo app,
+builds and ships it through EAS, maintains it with OTA updates inside the native wall, and gets it through App Store
+review, using real June 2026 postmortems rather than a tutorial. It is for agents and teams that ship mobile apps
+from CI or a coding agent, and it is a tool-employee: its surfaces are the `pebble` CLI, an MCP server and a local
+cockpit, with no chat face.
+
+<!-- fleet:use:start -->
+## Use it from any coding agent
+
+**Claude Code**: the plugin brings the skills, sub-agents, hooks and MCP server.
+
+```
+/plugin marketplace add naman10parikh/pebble
+/plugin install pebble@pebble
+```
+
+**Its MCP server**, in any MCP client:
+
+```bash
+claude mcp add --transport stdio pebble -- npx -y -p github:naman10parikh/pebble pebble-mcp
+codex mcp add pebble -- npx -y -p github:naman10parikh/pebble pebble-mcp
+```
+
+Cursor (`.cursor/mcp.json`), Gemini CLI (`.gemini/settings.json`) and most other clients take the same command as JSON:
+
+```json
+{
+  "mcpServers": {
+    "pebble": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "-p",
+        "github:naman10parikh/pebble",
+        "pebble-mcp"
+      ]
+    }
+  }
+}
+```
+
+**Gemini CLI**: the extension brings the context and the MCP server.
+
+```bash
+gemini extensions install https://github.com/naman10parikh/pebble
+```
+
+**One skill** (5 in all, in [skills/](skills/)), in any agent that reads Agent Skills:
+
+```bash
+gemini skills install https://github.com/naman10parikh/pebble --path skills/mobile-shape-decision
+git clone --depth 1 https://github.com/naman10parikh/pebble /tmp/pebble && cp -r /tmp/pebble/skills/mobile-shape-decision ~/.claude/skills/
+```
+
+**The command line:**
+
+```bash
+npx -y -p github:naman10parikh/pebble pebble --help
+```
+
+Codex, Cursor, OpenCode, GitHub Copilot and other agents read [AGENTS.md](AGENTS.md); Claude Code reads [CLAUDE.md](CLAUDE.md) and Gemini CLI reads [GEMINI.md](GEMINI.md), which import it. [llms.txt](llms.txt) maps every surface for agents that read first.
+<!-- fleet:use:end -->
+
+## Quick start
+
+In one step, straight from GitHub:
+
+```bash
+npx -y -p github:naman10parikh/pebble pebble --help
+```
+
+From a clone (Node 22 or later):
+
+```bash
+git clone https://github.com/naman10parikh/pebble && cd pebble
+npm ci && npm run build
+node dist/cli.js decide "a habit tracker that needs push notifications, background location and Bluetooth"
+node dist/cli.js brain "OTA native module"
+npm test && node eval/run.mjs
+```
+
+`decide` answers "native" with its reasons and the iOS PWA walls; `brain` returns the ranked postmortem. Provide
+`EXPO_TOKEN` (free, from [expo.dev](https://expo.dev)) for the full EAS path. Without it, pebble still makes shape
+decisions, scaffolds, runs `doctor` and answers brain queries.
+
+## How it works
+
+**Rule 0: never quote a version from memory.**
 
 pebble's training memory is **one era behind** (Expo SDK 53 / RN 0.80 with the legacy bridge). **That world is
 gone.** June 2026 is **SDK 56 / RN 0.85**, Legacy Architecture removed in RN 0.83 / SDK 55, Hermes V1 default,
 CodePush dead, Expo Go demoted. `pebble version-check` shells `npm view` so a version claim is never a guess.
 
-## Install
-
-```sh
-npm ci && npm run build         # build the CLI + MCP server (Node ≥ 22)
-node dist/cli.js --help         # or `pebble --help` once linked
-```
-
-As a Claude Code plugin: add this directory via **Settings → Plugins → Add local plugin** (or
-`claude plugin install pebble`). Bundles the CLI, the MCP server, 5 mobile skills, the mobile hooks, and 2
-mobile sub-agents (manifest: [`.claude-plugin/plugin.json`](.claude-plugin/plugin.json)).
-
-Provide **`EXPO_TOKEN`** (free, from [expo.dev](https://expo.dev)) for the full EAS path; without it, pebble
-still does shape decisions, scaffolds, doctor, and brain queries.
-
-## The hands (`pebble <cmd>`)
+**The hands (`pebble <cmd>`).**
 
 Every wrapped `eas`/`expo` call injects `--non-interactive` (anti-TTY-hang); `--environment` is enforced on
 `eas update`; secrets never reach stdout/logs.
@@ -50,15 +124,19 @@ Every wrapped `eas`/`expo` call injects `--non-interactive` (anti-TTY-hang); `--
 
 Full surface — CLI + MCP tools + NOT-list: [`AGENTS.md`](AGENTS.md). Agent-readable map: [`llms.txt`](llms.txt).
 
-## The acceptance test (the operational "done" bar)
+**The acceptance test (the operational "done" bar).**
 
 [`.github/workflows/acceptance.yml`](.github/workflows/acceptance.yml) (red-blocking, `macos-latest`):
 `pebble version-check` → `pebble init ./_acceptance --sdk 56 --template default@sdk-56` → `pebble doctor` →
 `eas config --platform ios --non-interactive` → `pebble screenshot --platform ios ./_acceptance/boot.png` →
 `test -s boot.png`. Degrades to structural-only (scaffold + doctor + L1 shape gate still red-block) without
-`EXPO_TOKEN`. Full contract: [`PLAN.md`](PLAN.md) §5.
+`EXPO_TOKEN`.
 
-## What's inside
+**The nightly loop.** `.github/workflows/rsi.yml` installs and builds pebble, checks React Native, Expo and
+eas-cli on npm against the brain's pins, runs the L1 and L2 evals, and writes a dated brain-refresh proposal that
+is kept as a run artifact for a person to review. It never merges, and a failing eval turns the run red.
+
+**What's inside.**
 
 - **`brain/`** — the dated (2026-06-11) expertise: [`OPINIONS.md`](brain/OPINIONS.md) (taste stances),
   [`KNOWN-PITFALLS.md`](brain/KNOWN-PITFALLS.md) (version landmines + the 60s triage),
@@ -70,10 +148,31 @@ Full surface — CLI + MCP tools + NOT-list: [`AGENTS.md`](AGENTS.md). Agent-rea
 - **`eval/`** — the Hamel pyramid (L1 structural · L2 binary golden tasks · L3 trajectory judge).
 - **`dsip.json` + `workflows/rsi.workflow.js`** — the deterministic nightly self-improvement loop.
 
-## See also
+<!-- fleet:anatomy:start -->
+<!-- fleet:anatomy:end -->
+
+## Siblings
 
 Part of the **Energy** fleet of agent-native domain employees: **pixel** (web/frontend), **turbo** (backend),
 **acorn** (database), **badge** (auth), **penny** (payments), **rocket** (deploy + CI). pebble owns the mobile
 half; when a brief crosses a boundary it names the right sibling and stops.
 
-License: MIT.
+<!-- fleet:footer:start -->
+## How it improves itself
+
+It carries its own evals and a self-improvement contract, [`dsip.json`](dsip.json) (level L2). A scheduled loop runs the evals, tries a change in a sandbox and opens it for review. A change that lowers a score is not merged, and a person merges every change. Lessons it learns are kept as rules in its memory files.
+
+## Part of a fleet
+
+One of the agent-native, recursively self-improving open-source projects by [Naman Parikh](https://github.com/naman10parikh). Each one is an agent employee that owns one part of an agent's harness or of the product around it.
+
+Siblings: [agentdial](https://github.com/naman10parikh/agentdial) (identity) · [wikimem](https://github.com/naman10parikh/wikimem) (memory) · [skillsmith](https://github.com/naman10parikh/skillsmith) (skills) · [agent-booster](https://github.com/naman10parikh/agent-booster) (tools / CLIs) · [armory](https://github.com/naman10parikh/armory) (MCPs and the component registry) · [agentgrid](https://github.com/naman10parikh/agentgrid) (dispatch) · [agentswarm](https://github.com/naman10parikh/agentswarm) (dispatch) · [agentbench](https://github.com/naman10parikh/agentbench) (evals) · [agentmoney](https://github.com/naman10parikh/agentmoney) (observability) · [claude-harness](https://github.com/naman10parikh/claude-harness) (the whole harness, as a template).
+
+## Contributing and security
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md); AI-assisted pull requests are welcome. Report a vulnerability privately, as [SECURITY.md](SECURITY.md) explains.
+
+## License
+
+MIT, © 2026 Naman Parikh. See [LICENSE](LICENSE).
+<!-- fleet:footer:end -->

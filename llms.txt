@@ -1,17 +1,30 @@
 # pebble
 
-> The Energy fleet's **mobile employee** — React Native · Expo · EAS, operated **headlessly as an agent**, not a
-> human at a TTY. Takes a product idea to a shipped, store-safe, OTA-maintainable iOS + Android app. Tagline:
-> *"the small thing you ship to a pocket."* — powered by Energy. A tool-employee consumed by coding agents and a
-> local cockpit (no reachability face); its surfaces are the `pebble` CLI, an MCP server, and the cockpit.
-> **Rule 0: training memory is one era behind (SDK 53/RN 0.80) — `pebble version-check` (`npm view`) before
-> quoting any version.** Query the expertise brain with `pebble brain "<q>"` before guessing.
+> Ships React Native and Expo apps headlessly: an agent employee for the shape call, the scaffold, EAS builds, OTA and store review.
+
+The Energy fleet's **mobile employee**: React Native · Expo · EAS, operated **headlessly as an agent**, not a human at a
+TTY. It takes a product idea to a shipped, store-safe, OTA-maintainable iOS + Android app. Tagline: *"the small thing
+you ship to a pocket."* Powered by Energy. A tool-employee consumed by coding agents and a local cockpit (no
+reachability face); its surfaces are the `pebble` CLI, an MCP server, 5 skills, two sub-agents, a Claude Code plugin,
+a Gemini CLI extension and the cockpit. **Rule 0: training memory is one era behind (SDK 53/RN 0.80) — run `pebble
+version-check` (`npm view`) before quoting any version.** Query the expertise brain with `pebble brain "<q>"` before
+guessing.
 
 ## Start here
 
 - [AGENTS.md](AGENTS.md): how a coding agent calls pebble — the full CLI + MCP tool surface, the NOT-list, Rule 0.
 - [identity/SOUL.md](identity/SOUL.md): the persona — what pebble IS / DOES / REFUSES, and how it introduces itself.
 - [CLAUDE.md](CLAUDE.md): pebble's real operating rules — the era-delta, the 5 breakage categories, the OTA wall, the headless flag reflexes, the boundary.
+- [GEMINI.md](GEMINI.md): Gemini CLI's context file; it imports AGENTS.md.
+- [README.md](README.md): what pebble is, the one-step install for every coding agent, the quick start.
+
+## Identity and memory
+
+- [identity/BRAND.md](identity/BRAND.md): why the name.
+- [identity/HEARTBEAT.md](identity/HEARTBEAT.md): the nightly loop's checks, how often, and what happens on an anomaly.
+- [identity/MEMORY.md](identity/MEMORY.md) and [memory/MEMORY.md](memory/MEMORY.md): the bootstrap facts.
+- [memory/LEARNINGS.md](memory/LEARNINGS.md): corrections that became rules.
+- [scripts/memory-search.sh](scripts/memory-search.sh): BM25 search over `brain/` (what `pebble brain` runs).
 
 ## Expertise brain (the queryable knowledge, dated 2026-06-11 — `pebble brain "<q>"`)
 
@@ -32,7 +45,7 @@
 
 ## MCP server (JSON-RPC over stdio — same core as the CLI)
 
-Registered in [.mcp.json](.mcp.json) as the `pebble` server (`node dist/mcp-server.js`). `tools/list` returns:
+[src/mcp-server.ts](src/mcp-server.ts) is the server; its bin is `pebble-mcp`. Start it with `npx -y -p github:naman10parikh/pebble pebble-mcp`, as [.mcp.json](.mcp.json) does; [.mcp.dev.json](.mcp.dev.json) starts the local build. `tools/list` returns:
 `pebble_decide_shape` · `pebble_init` · `pebble_doctor` · `pebble_eas_build` · `pebble_eas_submit` ·
 `pebble_eas_update` · `pebble_screenshot` · `pebble_review_check` · `pebble_brain_query` · `pebble_version_check`.
 
@@ -46,4 +59,13 @@ Registered in [.mcp.json](.mcp.json) as the `pebble` server (`node dist/mcp-serv
 [.github/workflows/acceptance.yml](.github/workflows/acceptance.yml) (red-blocking, `macos-latest`):
 `pebble version-check` → `pebble init ./_acceptance --sdk 56 --template default@sdk-56` → `pebble doctor` →
 `eas config --platform ios --non-interactive` → `pebble screenshot --platform ios ./_acceptance/boot.png` →
-`test -s boot.png`. Degrades to structural-only without `EXPO_TOKEN`. Full contract: [PLAN.md](PLAN.md) §5.
+`test -s boot.png`. Degrades to structural-only without `EXPO_TOKEN`.
+
+## Optional
+
+- [.claude-plugin/plugin.json](.claude-plugin/plugin.json) and [.claude-plugin/marketplace.json](.claude-plugin/marketplace.json): the Claude Code plugin. `/plugin install pebble --marketplace naman10parikh/pebble`.
+- [hooks/hooks.json](hooks/hooks.json): the plugin's headless-flag hook; [.claude/settings.json](.claude/settings.json) holds this repo's own hooks (the gate and the EAS run logger).
+- [gemini-extension.json](gemini-extension.json): the Gemini CLI extension. `gemini extensions install https://github.com/naman10parikh/pebble`.
+- [.well-known/agent.json](.well-known/agent.json): the A2A agent card.
+- [dsip.json](dsip.json): the self-improvement contract; [workflows/rsi.workflow.js](workflows/rsi.workflow.js) is the nightly loop.
+- [SECURITY.md](SECURITY.md), [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [LICENSE](LICENSE) (MIT).
